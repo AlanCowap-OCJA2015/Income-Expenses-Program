@@ -3,22 +3,22 @@ package com.team3.familybudgetapp;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Vector;
 
-
+import javax.swing.JButton;
 import javax.swing.JFrame;
-
+import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-
+import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.UIManager;
 import javax.swing.text.DefaultCaret;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.JButton;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 
 public class EditPerson {
 	private JTextField textFieldEditPersonFirstName;
@@ -27,7 +27,7 @@ public class EditPerson {
 	private JTextField textFieldEditPersonMonth;
 	private JTextField textFieldEditPersonYear;
 	private JTextField textFieldEditPersonGender;
-	public EditPerson(){
+	public EditPerson(final JList list, final ArrayList<Person> members, final int personIndex){
 		JFrame editPerson = new JFrame("Edit Person");
 		editPerson.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		try 
@@ -130,6 +130,21 @@ public class EditPerson {
 		panelEditPerson.add(btnExpenses);
 		
 		JButton btnOkay = new JButton("Okay");
+		btnOkay.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Person newPerson = new Person();
+				newPerson.firstName = textFieldEditPersonFirstName.getText();
+				newPerson.lastName = textFieldEditPersonLastName.getText();
+				members.add(newPerson);
+				Vector<String> listData = new Vector();
+				for (Person p : members) {
+					listData.add(p.firstName + " " + p.lastName);
+				}
+				list.setListData(listData);
+				list.revalidate();
+				list.repaint();
+			}
+		});
 		btnOkay.setBounds(109, 234, 89, 23);
 		panelEditPerson.add(btnOkay);
 		
