@@ -30,6 +30,7 @@ public class FamilyGui extends JFrame {
 	private JTextField wagesTextField;
 	private JTextField hoursTextField;
 	private int familySize = 0;
+	private int currentFamilyMember = 1;
 
 	/**
 	 * Launch the application.
@@ -74,14 +75,13 @@ public class FamilyGui extends JFrame {
 						familySize = Integer.parseInt(familySizeTextField.getText());
 					}
 				}catch(NumberFormatException nfe){}
-				System.out.println(familySize);
 			}
 		});
 		familySizeTextField.setBounds(87, 19, 41, 20);
 		contentPane.add(familySizeTextField);
 		familySizeTextField.setColumns(10);
 		
-		JLabel familyMemberLabel = new JLabel("Family Member 1");
+		final JLabel familyMemberLabel = new JLabel("Family Member 1");
 		familyMemberLabel.setBounds(21, 58, 117, 14);
 		contentPane.add(familyMemberLabel);
 		
@@ -182,10 +182,39 @@ public class FamilyGui extends JFrame {
 		
 		
 		
-		JButton submitButton = new JButton("Next Member");
+		final JButton submitButton = new JButton("Next Member");
 		submitButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				
+				
+				
+				if(currentFamilyMember <= familySize){
+					addToFamily();
+					currentFamilyMember++;
+					if(!(currentFamilyMember > familySize)){
+						familyMemberLabel.setText(familyMemberLabel.getText().substring(0, familyMemberLabel.getText().length()-1) + currentFamilyMember);
+					}else{
+						new ExpensesGui();
+					}
+					
+					nameTextField.setText("");
+					roleComboBox.setSelectedIndex(0);
+					wagesTextField.setText("");
+					hoursTextField.setText("");
+					earner.setSelected(false);
+					afterTax.setSelected(false);
+					timeForSalary.setSelectedIndex(0);
+					
+				}
+				
+				
+				if(currentFamilyMember == familySize){
+					submitButton.setText("Add Expenses");
+				}
+				
+			}
+			
+			public void addToFamily(){
 				//If family size text field is still editable and contains 1 or higher, set editable to false;
 				if(familySizeTextField.isEditable() && familySize >= 1){
 					familySizeTextField.setEditable(false);
@@ -214,13 +243,19 @@ public class FamilyGui extends JFrame {
 							break;
 							
 					}
-					double salary = Double.parseDouble(wages);
-					double hoursWorked = Double.parseDouble(hours);
+					
+					
 					boolean isEarner = earner.isSelected();
 					boolean isHourly = timeForSalary.getSelectedItem().toString().equals("Hourly");
 					boolean isAfterTax = afterTax.isSelected();
 					Person p;
 					if(isEarner){
+						double salary = 0;
+						double hoursWorked = 0;
+						try{
+							salary = Double.parseDouble(wages);
+							hoursWorked = Double.parseDouble(hours);
+						}catch(NumberFormatException nfe){}
 						if(isHourly){
 							p = new Person(name,fRole,salary,hoursWorked,isAfterTax);
 						}else{
@@ -233,10 +268,8 @@ public class FamilyGui extends JFrame {
 					
 					
 					Family.family.add(p);
-					Family.calculateTotalIncome();
 					
 				}
-				
 			}
 		});
 		

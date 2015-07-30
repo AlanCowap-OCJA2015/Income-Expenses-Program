@@ -1,4 +1,5 @@
 package com.teamapple.income_expenses;
+
 public class IncomeExpenses {
 
 	public static void main(String[] args) {
@@ -7,7 +8,8 @@ public class IncomeExpenses {
 	}
 	
 	public void runProgram(){
-		new FamilyGui();
+		FamilyGui g = new FamilyGui();
+		new ExpensesGui();
 	}
 
 }
