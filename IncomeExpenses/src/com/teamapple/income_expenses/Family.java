@@ -9,6 +9,7 @@ public class Family {
 	
 	public static double totalIncome = 0;
 	public static double totalExpenses = 0;
+	public static double totalSpareMoney = 0;
 	
 	
 	public static void calculateTotalIncome(){
@@ -21,14 +22,27 @@ public class Family {
 		System.out.println(totalIncome);
 	}
 	
-	public static void calculateExpenses(){
+	public static void calculateTotalExpenses(){
 		totalExpenses = 0;
 		
 		for(Expense expense: expenses){
 			totalExpenses += expense.getAmount();
 		}
 		
+		
+		
 		System.out.println(totalExpenses);
 	}
 
+	
+	public static void calculateSpareMoney(){
+		totalSpareMoney = totalIncome - totalExpenses;
+		
+		for(Expense expense: expenses){
+			double tempDisplay = 0.0;
+			tempDisplay = totalIncome - expense.getAmount();
+			//System.out.print(totalIncome + totalDisplay + " "tempDisplay);
+		}
+		}
+	
 }
