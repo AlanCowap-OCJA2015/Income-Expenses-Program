@@ -98,8 +98,10 @@ public class ExpensesGui extends JFrame {
 				String cost = costTextField.getText();
 				boolean reoccur = reoccurring.isSelected();
 				String time = paymentTime.getSelectedItem().toString();
+				boolean isWeekly = time.equals("Weekly");
+				double amount = Double.parseDouble(cost);
 				
-				
+				Family.expenses.add(new Expense(expense,amount,reoccur, isWeekly));
 				
 			}
 		});
@@ -110,7 +112,8 @@ public class ExpensesGui extends JFrame {
 		gotoReport.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				
+				setVisible(false);
+				IncomeExpenses.runReport();
 			}
 		});
 		gotoReport.setBounds(152, 126, 132, 23);

@@ -10,6 +10,11 @@ package com.teamapple.income_expenses;
 public class Expense {
 	private String name;
 	private double amount;
+	private boolean isRecurring;
+
+	public boolean isRecurring() {
+		return isRecurring;
+	}
 
 	public Expense(){
 		this("na", 0.0, false, false);
@@ -18,7 +23,7 @@ public class Expense {
 	
 	public Expense(String name, double amount, boolean isRecurring, boolean isWeekly){
 		this.name = name;
-		
+		this.isRecurring = isRecurring;
 		if(isRecurring){
 			if(isWeekly){
 				amount *= 52;
@@ -27,6 +32,7 @@ public class Expense {
 			}
 			
 			this.amount = amount;
+			
 		}else{
 			this.amount = amount;
 		}

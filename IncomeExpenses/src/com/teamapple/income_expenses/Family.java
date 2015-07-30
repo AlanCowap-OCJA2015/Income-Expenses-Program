@@ -12,14 +12,15 @@ public class Family {
 	public static double totalSpareMoney = 0;
 	
 	
-	public static void calculateTotalIncome(){
+	public static double calculateTotalIncome(){
 		
 		totalIncome = 0;
 		
 		for(Person member:family){
 			totalIncome += member.getSalary();
 		}
-		System.out.println(totalIncome);
+		totalSpareMoney = totalIncome;
+		return totalIncome;
 	}
 	
 	public static void calculateTotalExpenses(){
@@ -31,10 +32,10 @@ public class Family {
 		
 		System.out.println(totalExpenses);
 	}
-
 	
-	public static void calculateSpareMoney(String timescale){
-		totalSpareMoney = totalIncome;
+	
+	public static double calculateSpareMoney(String timescale, Expense expense){
+		//totalSpareMoney = totalIncome;
 		System.out.println("Total Income before expenses = " + totalIncome); 
 		int timeFactor = 1;
 		
@@ -44,12 +45,21 @@ public class Family {
 		case "WEEKLY":	timeFactor = 52; break;
 		}
 		
-		for(Expense expense: expenses){
-			totalSpareMoney -= (expense.getAmount()/timeFactor);
-			System.out.print(expense.getName() + " -" + (expense.getAmount()/timeFactor) + " = "+ totalSpareMoney);
-		}
+		//for(Expense expense: expenses){
+			if(expense.isRecurring()){
+				totalSpareMoney -= (expense.getAmount()/timeFactor);
+				//System.out.print(expense.getName() + " -" + (expense.getAmount()/timeFactor) + " = "+ totalSpareMoney);
+			}else{
+				System.out.println(expense.getAmount());
+				totalSpareMoney -= expense.getAmount();
+				//System.out.print(expense.getName() + " -" + (expense.getAmount()) + " = "+ totalSpareMoney);
+			}
+			
+		//}
 		
-		System.out.println("Total Income after expenses = " + totalSpareMoney); 
+		return totalSpareMoney;
+		
+		//System.out.println("Total Income after expenses = " + totalSpareMoney); 
 		
 	}
 	

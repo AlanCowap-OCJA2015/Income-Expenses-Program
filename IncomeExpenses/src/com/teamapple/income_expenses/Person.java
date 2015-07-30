@@ -26,7 +26,7 @@ public class Person {
 		this.name = name;
 		this.familyRole = familyRole;
 		salary = calculateTax(salary, isAfterTax);
-		this.salary += calculateSalary(salary, hoursWorked);
+		this.salary = calculateSalary(salary, hoursWorked);
 		
 		
 	}

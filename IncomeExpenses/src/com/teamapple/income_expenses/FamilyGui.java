@@ -194,7 +194,8 @@ public class FamilyGui extends JFrame {
 					if(!(currentFamilyMember > familySize)){
 						familyMemberLabel.setText(familyMemberLabel.getText().substring(0, familyMemberLabel.getText().length()-1) + currentFamilyMember);
 					}else{
-						new ExpensesGui();
+						setVisible(false);
+						IncomeExpenses.runExpense();
 					}
 					
 					nameTextField.setText("");
@@ -211,14 +212,17 @@ public class FamilyGui extends JFrame {
 				if(currentFamilyMember == familySize){
 					submitButton.setText("Add Expenses");
 				}
-				
+				System.out.println("curMem:" + currentFamilyMember + "famSize" + familySize);
+				System.out.println(Family.family.size());
 			}
 			
 			public void addToFamily(){
+			
 				//If family size text field is still editable and contains 1 or higher, set editable to false;
 				if(familySizeTextField.isEditable() && familySize >= 1){
 					familySizeTextField.setEditable(false);
-				}else if(familySize >= 1){
+				}
+				if(familySize >= 1){
 					
 					String name = nameTextField.getText();
 					String role = roleComboBox.getSelectedItem().toString();
@@ -262,9 +266,10 @@ public class FamilyGui extends JFrame {
 							p = new Person(name,fRole,salary,isAfterTax);
 						}
 					}else{
+						
 						p = new Person(name,fRole);
 					}
-					
+					System.out.println("gOT INTO MEHTOD");
 					
 					
 					Family.family.add(p);
