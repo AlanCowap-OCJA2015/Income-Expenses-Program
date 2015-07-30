@@ -103,8 +103,18 @@ public class ExpensesGui extends JFrame {
 				
 			}
 		});
-		submitExpense.setBounds(10, 100, 132, 23);
+		submitExpense.setBounds(10, 126, 132, 23);
 		contentPane.add(submitExpense);
+		
+		JButton gotoReport = new JButton("Proceed to report");
+		gotoReport.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				
+			}
+		});
+		gotoReport.setBounds(152, 126, 132, 23);
+		contentPane.add(gotoReport);
 		
 	}
 
