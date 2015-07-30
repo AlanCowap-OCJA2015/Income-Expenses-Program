@@ -1,4 +1,6 @@
-
+/*Joe & Jenn code challenge
+ * Class to deal with expenses creation for a family budget application 
+ */
 public class Expenses {
 	
 	//State
@@ -9,12 +11,10 @@ public class Expenses {
 	public static double totalExpense;
 	
 	//Behaviour
-	//standard no args constructor
 	public Expenses(){
 		this("No Bill", 0, TypeOfExpense.YEARLY);
 	}
 	
-	//3 args constructor
 	public Expenses(String name, double amount, TypeOfExpense type){
 		this.name = name;
 		this.amount = amount;
@@ -46,17 +46,16 @@ public class Expenses {
 	public void setType(TypeOfExpense type) {
 		this.type = type;
 	} 
-	//private overloaded method for use in setAmount method
+	
 	private void calculateTotalExpense(double amount){
 		totalExpense += this.calculateYearlyAmount(this);
 	}
-	//private method to  calculate all Expenses objects total amount, used for constructor
+	
 	private void calculateTotalExpense(double amount, TypeOfExpense type){
 		totalExpense += this.calculateYearlyAmount(amount, type);
 	}
 	
-	//overloaded private method for 3 args Constructor use
-  private double calculateYearlyAmount(double amount, TypeOfExpense type){
+	private double calculateYearlyAmount(double amount, TypeOfExpense type){
 		switch(type){
 		case WEEKLY:
 			return (amount * 52);
@@ -71,7 +70,6 @@ public class Expenses {
 		}
 	}
 	
-	//method to calculate a single expenses yearly amount
 	public double calculateYearlyAmount(Expenses exp){
 		switch(exp.getType()){
 		case WEEKLY:
@@ -86,5 +84,29 @@ public class Expenses {
 			return -1;
 		}
 	}
+	
+	
+	public String toString(){
+		String output = "";
+		output += "Name of Expense: " + this.name;
+		output += ", Amount to be paid €" + this.amount;
+		switch(this.getType()){
+		case WEEKLY:
+			output += ", Frequency: weekly";
+			break;
+		case MONTHLY:
+			output += ", Frequency: monthly";
+			break;
+		case BIMONTHLY:
+			output += ", Frequency: two months";
+			break;
+		case YEARLY:
+			output += ", Frequency: yearly";
+			break;
+		}
+		return output;
+	}
+	
+	
 
 }
