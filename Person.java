@@ -7,8 +7,10 @@
 import java.util.Scanner;
 
 public class Person {
+	
+	//state
 	static double netTotalIncome;
-	static double grossTotalIncome;
+	private static double grossTotalIncome;
 
 	static int numTaxPayers = 0;
 
@@ -19,6 +21,51 @@ public class Person {
 	private boolean isAfterTax;
 
 	private double income;
+	
+	//behaviour
+	
+	public Person(){
+		this("", "", false, 0);
+	}
+	//create person who is earner
+	public Person(String name, String role, boolean isEarner, double income){
+		this.name = name;
+		this.role = role;
+		this.income = income;
+		this.isEarner = isEarner;
+		
+		if(isEarner) numTaxPayers++;
+		
+		Scanner scan = new Scanner(System.in);
+		
+		System.out.print("Is this after Tax (Yes/No): ");
+		String taxed = scan.next();
+		taxed = taxed.toLowerCase();
+		if(taxed.contains("y")){			
+			netTotalIncome += income;
+		}else if(taxed.contains("n")){
+			System.out.println("hello");
+			grossTotalIncome += income;
+			netTotalIncome = calcTax();
+		}else{
+			System.out.println("Not a valid input, auto setting to taxed");
+			netTotalIncome = calcTax();
+		}
+		
+	}
+	
+	//create person who is not earner
+	public Person(String name, String role, boolean isEarner){
+		this.name = name;
+		this.role = role;
+		this.income = 0.0;
+		this.isEarner = isEarner;
+		
+		numTaxPayers++;
+	
+		
+	}
+	
 	//getters and setters
 	public static double getNetTotalIncome() {
 		return netTotalIncome;
@@ -84,31 +131,17 @@ public class Person {
 		this.income = income;
 	}
 
-	public Person(){
-		this("", "", false, 0);
-	}
-	//create person
-	public Person(String name, String role, boolean isEarner, double income){
-		this.name = name;
-		this.role = role;
-		this.income = income;
-		this.isEarner = isEarner;
-		
-		numTaxPayers++;
-
-		grossTotalIncome += income;
-
-		netTotalIncome += calcTax();
-
-	}
-	
 	//default work with yearly salary below
 	
 	private double calcTax() {
 		
+		System.out.println(this.income);
+		System.out.println(grossTotalIncome);
+		
 		double tempNet = 0;
 		//tax bracket different for two earners
-		if(numTaxPayers == 2 && grossTotalIncome > 65600D){
+		if(numTaxPayers >= 2 && grossTotalIncome > 65600D){
+			
 			
 			double tempGross = grossTotalIncome - 65600D;
 			double taxAt40 = (tempGross * 40D) / 100D;
@@ -116,7 +149,7 @@ public class Person {
 			
 			tempNet = grossTotalIncome - (taxAt40 + taxAt20);	
 		
-		} else if(numTaxPayers == 2 && grossTotalIncome < 65600D){
+		} else if(numTaxPayers >= 2 && grossTotalIncome < 65600D){
 			
 			double taxAt20 = grossTotalIncome * 20 / 100;
 			tempNet = grossTotalIncome - taxAt20;
@@ -138,8 +171,9 @@ public class Person {
 		
 		return tempNet;
 	}
+	
 	//calc hours and weeks worked to yearly salary
-	public static Double calcSalary(){
+	public static double calcSalary(){
 		System.out.println("1) Enter yearly salary\n2) Enter hourly rate");
 		System.out.print("Please choose: ");
 
@@ -155,10 +189,20 @@ public class Person {
 
 		if(choice == 2){
 			income = calcHourly(income);
+		}else if(choice == 1){
+			
+		}else{
+			System.out.println("Invalid choice, assuming yearly rate");
 		}
 
 		return income;
 	}
+	
+//	public static Double calcSalary(double income){
+//		
+//		income = calcHourly(income);
+//		return income;
+//	}
 
 	private static double calcHourly(double income) {
 		System.out.println("Please enter amount of hours you work a week");
@@ -175,7 +219,7 @@ public class Person {
 
 	@Override
 	public String toString(){
-		String temp = "Name: " + this.name + "\nRole: " + this.role + "\nEarner: " + this.isEarner + "\nIncome: ";
+		String temp = "Name: " + this.name + ", Role: " + this.role + ", Earner: " + this.isEarner + ", Income: ";
 		String temp2 = String.format("%.2f", income);
 
 		return temp + "€" + temp2;
