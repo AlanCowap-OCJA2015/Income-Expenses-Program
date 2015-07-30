@@ -1,3 +1,7 @@
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -38,7 +42,8 @@ public class BudgetApp {
 			System.out.println("4) View total income");
 			System.out.println("5) View total expenses");
 			System.out.println("6) View discretionary income");
-			System.out.println("7) Quit");
+			System.out.println("7) Save report to file");
+			System.out.println("8) Quit");
 			System.out.print("Please pick an option: ");
 			int userChoice = scan.nextInt();
 
@@ -53,15 +58,18 @@ public class BudgetApp {
 				addExpense();
 				break;
 			case 4:
-				System.out.println("Not implemented");
+				System.out.println(Person.netTotalIncome);
 				break;
 			case 5:
-				System.out.println("Not implemented");
+				System.out.println(Expenses.totalExpense);
 				break;
 			case 6:
-				System.out.println("Not implemented");
+				System.out.println(Person.netTotalIncome - Expenses.totalExpense);
 				break;
 			case 7:
+				saveToReport();
+				break;
+			case 8:
 				System.out.println("Goodbye");
 				isRunning = false;
 				break;
@@ -75,6 +83,35 @@ public class BudgetApp {
 
 
 	}
+
+	private void saveToReport() {
+		// TODO Auto-generated method stub
+		try {
+			
+			System.out.println("Hello");
+			
+			BufferedWriter bw = new BufferedWriter(new FileWriter(new File("report.txt")));
+			String report = "";
+			
+			for(int i = 0; i < family.size(); ++i){
+				report += family.get(i) + "\r\n";
+			}
+			
+			for(int i = 0; i < bills.size(); ++i){
+				report += bills.get(i) + "\r\n";
+			}
+			
+			bw.write(report);
+			bw.close();
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+
+
 
 	private void viewFamily(){
 		for(Person member: family){
@@ -102,6 +139,7 @@ public class BudgetApp {
 			isEarner = true;
 			family.add(new Person(name, role, isEarner, Person.calcSalary()));
 		}else if(contributing.contains("n")){
+			System.out.println(isEarner);
 			family.add(new Person(name, role, isEarner));
 		}else{
 			System.out.println("Not a valid input, auto setting to no");
