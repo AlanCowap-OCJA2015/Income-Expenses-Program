@@ -103,6 +103,11 @@ public class ExpensesGui extends JFrame {
 				
 				Family.expenses.add(new Expense(expense,amount,reoccur, isWeekly));
 				
+				expenseTextField.setText("");
+				costTextField.setText("");
+				reoccurring.setSelected(false);
+				paymentTime.setSelectedIndex(0);
+				
 			}
 		});
 		submitExpense.setBounds(10, 126, 132, 23);

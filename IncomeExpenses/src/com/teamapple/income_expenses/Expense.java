@@ -47,6 +47,16 @@ public class Expense {
 		return amount;
 	}
 	
+	public double getAmount(String timeframe){
+		switch(timeframe.toUpperCase()){
+		case "WEEKLY": return amount/52;
+		case "MONTHLY": return amount/12;
+		case "YEARLY": return amount;
+		default: return amount;
+		}
+		
+	}
+	
 	
 
 }

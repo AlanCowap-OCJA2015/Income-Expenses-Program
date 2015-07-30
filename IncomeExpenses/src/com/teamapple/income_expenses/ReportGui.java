@@ -20,6 +20,9 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.JComboBox;
+import java.awt.event.ItemListener;
+import java.awt.event.ItemEvent;
 
 public class ReportGui extends JFrame {
 
@@ -27,6 +30,7 @@ public class ReportGui extends JFrame {
 	private final JScrollPane scrollPane;
 	private JLabel lblReport;
 	private JButton btnSaveReport;
+	private JComboBox<String> timeFrame;
 
 	/**
 	 * Launch the application.
@@ -114,6 +118,41 @@ public class ReportGui extends JFrame {
 		});
 		btnSaveReport.setBounds(193, 525, 109, 23);
 		contentPane.add(btnSaveReport);
+		
+		timeFrame = new JComboBox<String>();
+		timeFrame.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent arg0) {
+				
+				String line = "-------------------------------------------------"
+						+ "-----------------------------------------------------------------------------------\n";
+				
+				String frame = timeFrame.getSelectedItem().toString();
+				frame = frame.toUpperCase();
+				
+				textPane.setText("Total Income: " + Family.calculateTotalIncome() + "\n" + line);
+				textPane.setText(textPane.getText() + "Expense:\t\tAmount Deducted:\tTotal:\n");
+				
+				for(Expense e:Family.expenses){
+					String s = "";
+					
+					for(int i = 0; i < 30 - e.getName().length(); i++){
+						s += ' ';
+					}
+							
+					
+					textPane.setText(textPane.getText() + e.getName() + s +" \t-" + e.getAmount(frame) + "   " + Family.calculateSpareMoney(frame, e) + "\n");
+				
+				
+				}
+				
+				
+			}
+		});
+		timeFrame.addItem("Weekly");
+		timeFrame.addItem("Monthly");
+		timeFrame.addItem("Yearly");
+		timeFrame.setBounds(10, 526, 79, 20);
+		contentPane.add(timeFrame);
 		
 	}
 }
