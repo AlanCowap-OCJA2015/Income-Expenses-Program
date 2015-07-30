@@ -29,20 +29,28 @@ public class Family {
 			totalExpenses += expense.getAmount();
 		}
 		
-		
-		
 		System.out.println(totalExpenses);
 	}
 
 	
-	public static void calculateSpareMoney(){
-		totalSpareMoney = totalIncome - totalExpenses;
+	public static void calculateSpareMoney(String timescale){
+		totalSpareMoney = totalIncome;
+		System.out.println("Total Income before expenses = " + totalIncome); 
+		int timeFactor = 1;
+		
+		switch(timescale){
+		case "YEARLY": timeFactor = 1; break;
+		case "MONTHLY": timeFactor = 12;  break;
+		case "WEEKLY":	timeFactor = 52; break;
+		}
 		
 		for(Expense expense: expenses){
-			double tempDisplay = 0.0;
-			tempDisplay = totalIncome - expense.getAmount();
-			//System.out.print(totalIncome + totalDisplay + " "tempDisplay);
+			totalSpareMoney -= (expense.getAmount()/timeFactor);
+			System.out.print(expense.getName() + " -" + (expense.getAmount()/timeFactor) + " = "+ totalSpareMoney);
 		}
-		}
+		
+		System.out.println("Total Income after expenses = " + totalSpareMoney); 
+		
+	}
 	
 }
