@@ -18,4 +18,8 @@ public class Person {
 	double income = 0.0;
 	double taxBracket = 0.0;
 	
+	public String getFullName() {
+		return firstName + (firstName.length() > 0 ? " " : "") + lastName;
+	}
+	
 }
