@@ -18,6 +18,14 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+/*
+ * Specification
+ * Create an income and expense tracker for families
+ * Application should allow the following to be done:
+ *  - Specify size of family
+ *  - How many are earners and non-earners
+ *  - Specify amout
+ */
 public class FamilyBudgetApp extends JFrame {
 
 	private JPanel contentPaneMainWindow;
@@ -44,6 +52,7 @@ public class FamilyBudgetApp extends JFrame {
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
+//				new TestFamily(family);
 				try {
 					FamilyBudgetApp frame = new FamilyBudgetApp();
 					updateButtons();
@@ -136,6 +145,7 @@ public class FamilyBudgetApp extends JFrame {
 		btnReports.setBounds(266, 269, 134, 23);
 		btnReports.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				new Reports(family);
 			}
 		});
 		contentPaneMainWindow.add(btnReports);
