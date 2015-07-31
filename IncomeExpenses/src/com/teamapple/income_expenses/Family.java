@@ -23,6 +23,19 @@ public class Family {
 		return totalIncome;
 	}
 	
+	public static double calculateTotalIncome(String timescale){
+		calculateTotalIncome();
+		int timeFactor = 1;
+		
+		switch(timescale){
+		case "YEARLY": timeFactor = 1; break;
+		case "MONTHLY": timeFactor = 12;  break;
+		case "WEEKLY":	timeFactor = 52; break;
+		}
+		
+		return totalIncome/timeFactor;
+	}
+	
 	public static void calculateTotalExpenses(){
 		totalExpenses = 0;
 		
@@ -57,7 +70,7 @@ public class Family {
 			
 		//}
 		
-		return totalSpareMoney;
+		return totalSpareMoney/timeFactor;
 		
 		//System.out.println("Total Income after expenses = " + totalSpareMoney); 
 		

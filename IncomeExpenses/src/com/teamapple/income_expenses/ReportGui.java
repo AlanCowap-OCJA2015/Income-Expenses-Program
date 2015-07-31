@@ -128,8 +128,11 @@ public class ReportGui extends JFrame {
 				
 				String frame = timeFrame.getSelectedItem().toString();
 				frame = frame.toUpperCase();
-				
-				textPane.setText("Total Income: " + Family.calculateTotalIncome() + "\n" + line);
+				String income = "€" + Family.calculateTotalIncome(frame);
+				if(income.length() >= income.indexOf('.') + 3){
+					income = income.substring(0, income.indexOf('.') + 3);
+				}
+				textPane.setText("Total Income: " + income + "\n" + line);
 				textPane.setText(textPane.getText() + "Expense:\t\tAmount Deducted:\tBalance:\n");
 				
 				for(Expense e:Family.expenses){
@@ -140,9 +143,13 @@ public class ReportGui extends JFrame {
 					}
 							
 					String formattedAmount = "" + e.getAmount(frame);
-					formattedAmount = formattedAmount.substring(0, formattedAmount.indexOf('.') + 3);
+					if(formattedAmount.length() >= formattedAmount.indexOf('.') + 3){
+						formattedAmount = formattedAmount.substring(0, formattedAmount.indexOf('.') + 3);
+					}
 					String formattedSpare = "" + Family.calculateSpareMoney(frame, e);
-					formattedSpare = formattedSpare.substring(0, formattedSpare.indexOf('.') + 3);
+					if(formattedSpare.length() >= formattedSpare.indexOf('.') + 3){
+						formattedSpare = formattedSpare.substring(0, formattedSpare.indexOf('.') + 3);
+					}
 					textPane.setText(textPane.getText() + e.getName() + s +" \t-€" + formattedAmount + "   \t\t€" + formattedSpare + "\n");
 				
 				
