@@ -1,6 +1,7 @@
 package com.team3.familybudgetapp;
 
 import java.awt.EventQueue;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Vector;
@@ -10,6 +11,9 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -18,9 +22,21 @@ public class FamilyBudgetApp extends JFrame {
 
 	private JPanel contentPaneMainWindow;
 
-	private Family family = new Family();
-	int selectedMember = 0;
-	public JList list;
+	private static Family family = new Family();
+	
+	public Rectangle screenSize;
+	
+	static JList list;
+	static JButton btnRemovePerson;
+	static JButton btnEditPerson;
+	static JButton btnLoad;
+	static JButton btnSave;
+	static JButton btnAddPerson;
+	static JLabel lblFamilyMembers;
+	static JButton btnEditExpenses;
+	static JButton btnReports;
+	
+	static public JFrame familyBudgetAppWindow;
 	
 	/**
 	 * Launch the application.
@@ -30,6 +46,8 @@ public class FamilyBudgetApp extends JFrame {
 			public void run() {
 				try {
 					FamilyBudgetApp frame = new FamilyBudgetApp();
+					updateButtons();
+					updateList();
 					frame.setVisible(true);
 					frame.setResizable(false);
 				} catch (Exception e) {
@@ -45,74 +63,127 @@ public class FamilyBudgetApp extends JFrame {
 	 */
 	public FamilyBudgetApp() {
 		
+		screenSize = this.getGraphicsConfiguration().getBounds();
+		familyBudgetAppWindow = this;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 553, 413);
+		try 
+		{
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		setBounds(screenSize.width / 2 - 120, screenSize.height / 2 - 180, 420, 333);
+		setLocation(screenSize.width / 2 - getWidth() / 2, screenSize.height / 2 - getHeight() / 2);
+		System.out.println();
 		contentPaneMainWindow = new JPanel();
 		contentPaneMainWindow.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPaneMainWindow);
 		contentPaneMainWindow.setLayout(null);
 
-		JLabel lblFamilyMembers = new JLabel("Family Members");
-		lblFamilyMembers.setBounds(100, 11, 121, 14);
-		contentPaneMainWindow.add(lblFamilyMembers);
-
-		JButton btnAddPerson = new JButton("Add Person");
+		// Add a person to the family members list
+		btnAddPerson = new JButton("Add Member");
+		btnAddPerson.setBounds(266, 37, 134, 23);
 		btnAddPerson.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				new AddPerson(list, family.members);
+				new AddPerson(family.members);
 			}
 		});
-		btnAddPerson.setBounds(266, 37, 134, 23);
 		contentPaneMainWindow.add(btnAddPerson);
 
-		JButton btnRemovePerson = new JButton("Remove Person");
+		// Remove a person from the family members list
+		btnRemovePerson = new JButton("Remove Member");
+		btnRemovePerson.setBounds(266, 71, 134, 23);
 		btnRemovePerson.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				new RemovePerson(list, family.members, list.getSelectedIndex());
 			}
 		});
-		btnRemovePerson.setBounds(266, 98, 134, 23);
 		contentPaneMainWindow.add(btnRemovePerson);
 
-		JButton btnEditPerson = new JButton("Edit Person");
+		// Edit the details of a family member
+		btnEditPerson = new JButton("Edit Member");
+		btnEditPerson.setBounds(266, 105, 134, 23);
+		btnEditPerson.setEnabled(false);
 		btnEditPerson.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new EditPerson();
-				
+				new EditPerson(family.members.get(list.getSelectedIndex()));
 			}
 		});
-		btnEditPerson.setBounds(266, 154, 134, 23);
 		contentPaneMainWindow.add(btnEditPerson);
 
-		JButton btnLoad = new JButton("Load");
-		btnLoad.setBounds(266, 212, 134, 23);
+		// Load a family data file
+		btnLoad = new JButton("Load");
+		btnLoad.setBounds(336, 162, 64, 23);
 		contentPaneMainWindow.add(btnLoad);
 
-		JButton btnSave = new JButton("Save");
-		btnSave.setBounds(266, 269, 134, 23);
+		// Save the current family data file
+		btnSave = new JButton("Save");
+		btnSave.setBounds(266, 162, 64, 23);
 		contentPaneMainWindow.add(btnSave);
 
-		JButton btnEditExpenses = new JButton("Edit Expenses");
-		btnEditExpenses.setBounds(25, 303, 115, 23);
+		// Edit the family expenses list
+		btnEditExpenses = new JButton("Family Expenses...");
+		btnEditExpenses.setBounds(266, 235, 134, 23);
+		btnEditExpenses.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				new ExpensesWindow(family.expenses, "the family");
+			}
+		});
 		contentPaneMainWindow.add(btnEditExpenses);
 
-		JButton btnReports = new JButton("Reports");
+		// Generate budget reports
+		btnReports = new JButton("Reports");
+		btnReports.setBounds(266, 269, 134, 23);
 		btnReports.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 			}
 		});
-		btnReports.setBounds(141, 303, 115, 23);
 		contentPaneMainWindow.add(btnReports);
 		
+		// Family members list heading
+		lblFamilyMembers = new JLabel("Family Members");
+		lblFamilyMembers.setBounds(100, 11, 121, 14);
+		contentPaneMainWindow.add(lblFamilyMembers);
+
+		// A JScrollPane to hold the list control so it can be scrolled if it gets too big to fit.
+		JScrollPane scroller = new JScrollPane();
+		scroller.setBounds(10, 37, 246, 255);
+		scroller.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		scroller.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		contentPaneMainWindow.add(scroller);
+		
+		// The list of family members
 		list = new JList();
+		scroller.setViewportView(list);
 		list.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent arg0) {
-//				list.setListData(listData);
-				selectedMember = list.getSelectedIndex();
-				System.out.println(selectedMember);
+				updateButtons();
 			}
 		});
-		list.setBounds(25, 37, 231, 255);
-		contentPaneMainWindow.add(list);
+
+	} // End of FamilyBudgetApp window handlers
+
+	
+	// Update the contents of the listbox with the current family member list
+	public static void updateList () {
+		String[] listData = new String[family.members.size()];
+		for (int p = 0; p < family.members.size(); ++p) { 
+			listData[p] = family.members.get(p).getFullName();  
+		}
+		list.setListData(listData);
+		list.revalidate();
+		list.repaint();
+
 	}
+	
+	public static void updateButtons () {
+		if (FamilyBudgetApp.family.members.size() == 0) {
+			btnRemovePerson.setEnabled(false);
+			btnEditPerson.setEnabled(false);
+		} else {
+			btnRemovePerson.setEnabled(true);
+			btnEditPerson.setEnabled(true);
+		}
+	}
+	
 }
