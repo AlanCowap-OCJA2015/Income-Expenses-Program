@@ -24,14 +24,16 @@ import javax.swing.text.DefaultCaret;
 
 import org.eclipse.wb.swing.FocusTraversalOnArray;
 import java.awt.Dialog.ModalExclusionType;
+import javax.swing.JComboBox;
+import javax.swing.DefaultComboBoxModel;
 
 public class AddPerson {
 	private JTextField textFieldFirstName;
 	private JTextField textFieldLastName;
-	private JTextField textFieldDateOfBirthDay;
-	private JTextField textFieldDateOfBirthMonth;
-	private JTextField textFieldDateOfBirthYear;
-	private JTextField textFieldGender;
+	private JTextField textFieldDay;
+	private JTextField textFieldMonth;
+	private JTextField textFieldYear;
+	private JTextField textField;
 	
 	public AddPerson(final ArrayList<Person> members){
 		JList list = FamilyBudgetApp.list;
@@ -47,74 +49,74 @@ public class AddPerson {
 		panelAddPerson.setLayout(null);
 		panelAddPerson.setOpaque(true);
 		addPerson.getContentPane().add(BorderLayout.CENTER, panelAddPerson);
-		
+
+		// First name label and text field
 		JLabel lblFirstName = new JLabel("First Name");
 		lblFirstName.setBounds(10, 40, 73, 14);
 		panelAddPerson.add(lblFirstName);
-		
 		textFieldFirstName = new JTextField();
 		textFieldFirstName.setBounds(85, 37, 243, 20);
-		panelAddPerson.add(textFieldFirstName);
-		textFieldFirstName.setColumns(10);
 		textFieldFirstName.grabFocus();
+		panelAddPerson.add(textFieldFirstName);
 		
+		// Last name label and text field
 		JLabel lblLastName = new JLabel("Last Name");
 		lblLastName.setBounds(10, 81, 73, 14);
 		panelAddPerson.add(lblLastName);
-		
 		textFieldLastName = new JTextField();
 		textFieldLastName.setBounds(85, 78, 243, 20);
 		panelAddPerson.add(textFieldLastName);
-		textFieldLastName.setColumns(10);
-		
+
+		// Date of birth label
 		JLabel lblDateOfBirth = new JLabel("Date of Birth");
 		lblDateOfBirth.setEnabled(false);
 		lblDateOfBirth.setBounds(10, 132, 73, 14);
 		panelAddPerson.add(lblDateOfBirth);
 		
-		textFieldDateOfBirthDay = new JTextField();
-		textFieldDateOfBirthDay.setEnabled(false);
-		textFieldDateOfBirthDay.setBounds(85, 129, 40, 20);
-		panelAddPerson.add(textFieldDateOfBirthDay);
-		textFieldDateOfBirthDay.setColumns(10);
-		
-		textFieldDateOfBirthMonth = new JTextField();
-		textFieldDateOfBirthMonth.setEnabled(false);
-		textFieldDateOfBirthMonth.setBounds(135, 129, 40, 20);
-		panelAddPerson.add(textFieldDateOfBirthMonth);
-		textFieldDateOfBirthMonth.setColumns(10);
-		
-		textFieldDateOfBirthYear = new JTextField();
-		textFieldDateOfBirthYear.setEnabled(false);
-		textFieldDateOfBirthYear.setBounds(185, 129, 59, 20);
-		panelAddPerson.add(textFieldDateOfBirthYear);
-		textFieldDateOfBirthYear.setColumns(10);
-		
+		// Date of birth : Day
 		JLabel lblDd = new JLabel("DD");
 		lblDd.setEnabled(false);
 		lblDd.setBounds(85, 109, 29, 14);
 		panelAddPerson.add(lblDd);
+		textFieldDay = new JTextField();
+		textFieldDay.setEnabled(false);
+		textFieldDay.setBounds(85, 129, 40, 20);
+		panelAddPerson.add(textFieldDay);
 		
+		// Date of birth: Month
 		JLabel lblMm = new JLabel("MM");
 		lblMm.setEnabled(false);
 		lblMm.setBounds(135, 109, 29, 14);
 		panelAddPerson.add(lblMm);
+		textFieldMonth = new JTextField();
+		textFieldMonth.setEnabled(false);
+		textFieldMonth.setBounds(135, 129, 40, 20);
+		panelAddPerson.add(textFieldMonth);
 		
+		// Date of birth: Year
 		JLabel lblYyyy = new JLabel("YYYY");
 		lblYyyy.setEnabled(false);
 		lblYyyy.setBounds(185, 109, 40, 14);
 		panelAddPerson.add(lblYyyy);
-		
+		textFieldYear = new JTextField();
+		textFieldYear.setEnabled(false);
+		textFieldYear.setBounds(185, 129, 59, 20);
+		panelAddPerson.add(textFieldYear);
+
+		// Gender label and combo box
 		JLabel lblGender = new JLabel("Gender");
 		lblGender.setEnabled(false);
 		lblGender.setBounds(10, 177, 73, 14);
 		panelAddPerson.add(lblGender);
-		
-		textFieldGender = new JTextField();
-		textFieldGender.setEnabled(false);
-		textFieldGender.setBounds(85, 174, 90, 20);
-		panelAddPerson.add(textFieldGender);
-		textFieldGender.setColumns(10);
+		JComboBox genderComboBox = new JComboBox();
+		genderComboBox.setModel(new DefaultComboBoxModel(new String[] {"Male", "Female", "Other"}));
+		genderComboBox.setEnabled(false);
+		genderComboBox.setBounds(85, 173, 90, 22);
+		panelAddPerson.add(genderComboBox);
+		textField = new JTextField();
+		textField.setEnabled(false);
+		textField.setBounds(185, 174, 143, 20);
+		panelAddPerson.add(textField);
 		
 		JButton btnOkay = new JButton("Okay");
 		btnOkay.setBounds(16, 224, 89, 23);
@@ -142,12 +144,14 @@ public class AddPerson {
 			}
 		});
 		panelAddPerson.add(btnCancel);
+		
+		
 		addPerson.setResizable(false);
 		addPerson.setSize(346, 284);
 		Rectangle screenSize = addPerson.getGraphicsConfiguration().getBounds();
 		addPerson.setLocation(screenSize.width / 2 - addPerson.getWidth() / 2, screenSize.height / 2 - addPerson.getHeight() / 2);
+		addPerson.setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[]{textFieldFirstName, textFieldLastName, textFieldDay, textFieldMonth, textFieldYear, btnOkay, btnCancel}));
 		addPerson.setVisible(true);
-		addPerson.setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[]{textFieldFirstName, textFieldLastName, textFieldDateOfBirthDay, textFieldDateOfBirthMonth, textFieldDateOfBirthYear, textFieldGender, btnOkay, btnCancel}));
 		
 	}
 }
