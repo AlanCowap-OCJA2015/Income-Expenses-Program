@@ -1,34 +1,34 @@
 package com.team3.familybudgetapp;
 
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-import java.awt.Font;
+import java.awt.Component;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
-import java.util.Vector;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.ScrollPaneConstants;
 import javax.swing.UIManager;
-import javax.swing.text.DefaultCaret;
+
+import org.eclipse.wb.swing.FocusTraversalOnArray;
 
 public class EditPerson {
-	private JTextField textFieldEditPersonFirstName;
-	private JTextField textFieldEditPersonLastName;
-	private JTextField textFieldtextFieldEditPersonDay;
-	private JTextField textFieldEditPersonMonth;
-	private JTextField textFieldEditPersonYear;
-	private JTextField textFieldEditPersonGender;
-	public EditPerson(final JList list, final ArrayList<Person> members, final int personIndex){
-		JFrame editPerson = new JFrame("Edit Person");
+	private JTextField textFieldFirstName;
+	private JTextField textFieldLastName;
+	private JTextField textFieldDateOfBirthDay;
+	private JTextField textFieldDateOfBirthMonth;
+	private JTextField textFieldDateOfBirthYear;
+	private JTextField textFieldGender;
+	
+	public EditPerson(final Person member){
+		JList list = FamilyBudgetApp.list;
+		final JFrame editPerson = new JFrame("Edit Family Member");
 		editPerson.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		try 
 		{
@@ -39,121 +39,117 @@ public class EditPerson {
 		JPanel panelEditPerson = new JPanel();
 		panelEditPerson.setLayout(null);
 		panelEditPerson.setOpaque(true);
-		JTextArea textArea = new JTextArea(15, 50);
-		textArea.setWrapStyleWord(true);
-		textArea.setEditable(false);
-		textArea.setFont(Font.getFont(Font.SANS_SERIF));
-		JScrollPane scroller = new JScrollPane(textArea);
-		scroller.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		scroller.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		JPanel inputpanel = new JPanel();
-		inputpanel.setLayout(new FlowLayout());
-		DefaultCaret caret = (DefaultCaret) textArea.getCaret();
-		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
-		panelEditPerson.add(scroller);
-		panelEditPerson.add(inputpanel);
 		editPerson.getContentPane().add(BorderLayout.CENTER, panelEditPerson);
 		
 		JLabel lblFirstName = new JLabel("First Name");
-		lblFirstName.setBounds(10, 11, 77, 14);
+		lblFirstName.setBounds(10, 40, 73, 14);
 		panelEditPerson.add(lblFirstName);
-		
-		textFieldEditPersonFirstName = new JTextField();
-		textFieldEditPersonFirstName.setBounds(97, 8, 161, 20);
-		panelEditPerson.add(textFieldEditPersonFirstName);
-		textFieldEditPersonFirstName.setColumns(10);
+		textFieldFirstName = new JTextField();
+		textFieldFirstName.setBounds(85, 37, 243, 20);
+		textFieldFirstName.setText(member.firstName);
+		panelEditPerson.add(textFieldFirstName);
+		textFieldFirstName.setColumns(10);
+		textFieldFirstName.grabFocus();
 		
 		JLabel lblLastName = new JLabel("Last Name");
-		lblLastName.setBounds(10, 53, 77, 14);
+		lblLastName.setBounds(10, 81, 73, 14);
 		panelEditPerson.add(lblLastName);
-		
-		textFieldEditPersonLastName = new JTextField();
-		textFieldEditPersonLastName.setBounds(97, 50, 161, 20);
-		panelEditPerson.add(textFieldEditPersonLastName);
-		textFieldEditPersonLastName.setColumns(10);
+		textFieldLastName = new JTextField();
+		textFieldLastName.setBounds(85, 78, 243, 20);
+		textFieldLastName.setText(member.lastName);
+		panelEditPerson.add(textFieldLastName);
+		textFieldLastName.setColumns(10);
 		
 		JLabel lblDateOfBirth = new JLabel("Date of Birth");
-		lblDateOfBirth.setBounds(10, 95, 77, 14);
-		panelEditPerson.add(lblDateOfBirth);
-		
-		textFieldtextFieldEditPersonDay = new JTextField();
-		textFieldtextFieldEditPersonDay.setBounds(97, 92, 33, 20);
-		panelEditPerson.add(textFieldtextFieldEditPersonDay);
-		textFieldtextFieldEditPersonDay.setColumns(10);
-		
-		textFieldEditPersonMonth = new JTextField();
-		textFieldEditPersonMonth.setBounds(140, 92, 33, 20);
-		panelEditPerson.add(textFieldEditPersonMonth);
-		textFieldEditPersonMonth.setColumns(10);
-		
-		textFieldEditPersonYear = new JTextField();
-		textFieldEditPersonYear.setBounds(183, 92, 33, 20);
-		panelEditPerson.add(textFieldEditPersonYear);
-		textFieldEditPersonYear.setColumns(10);
-		
+		lblDateOfBirth.setEnabled(false);
+		lblDateOfBirth.setBounds(10, 132, 73, 14);
 		JLabel lblDd = new JLabel("DD");
-		lblDd.setBounds(97, 77, 33, 14);
+		lblDd.setEnabled(false);
+		lblDd.setBounds(85, 109, 29, 14);
 		panelEditPerson.add(lblDd);
-		
 		JLabel lblMm = new JLabel("MM");
-		lblMm.setBounds(140, 77, 33, 14);
+		lblMm.setEnabled(false);
+		lblMm.setBounds(135, 109, 29, 14);
 		panelEditPerson.add(lblMm);
-		
 		JLabel lblYyyy = new JLabel("YYYY");
-		lblYyyy.setBounds(183, 77, 46, 14);
+		lblYyyy.setEnabled(false);
+		lblYyyy.setBounds(185, 109, 40, 14);
 		panelEditPerson.add(lblYyyy);
+		panelEditPerson.add(lblDateOfBirth);
+		textFieldDateOfBirthDay = new JTextField();
+		textFieldDateOfBirthDay.setEnabled(false);
+		textFieldDateOfBirthDay.setBounds(85, 129, 40, 20);
+		panelEditPerson.add(textFieldDateOfBirthDay);
+		textFieldDateOfBirthDay.setColumns(10);
+		textFieldDateOfBirthMonth = new JTextField();
+		textFieldDateOfBirthMonth.setEnabled(false);
+		textFieldDateOfBirthMonth.setBounds(135, 129, 40, 20);
+		panelEditPerson.add(textFieldDateOfBirthMonth);
+		textFieldDateOfBirthMonth.setColumns(10);
+		textFieldDateOfBirthYear = new JTextField();
+		textFieldDateOfBirthYear.setEnabled(false);
+		textFieldDateOfBirthYear.setBounds(185, 129, 59, 20);
+		panelEditPerson.add(textFieldDateOfBirthYear);
+		textFieldDateOfBirthYear.setColumns(10);
 		
 		JLabel lblGender = new JLabel("Gender");
-		lblGender.setBounds(10, 135, 46, 14);
+		lblGender.setEnabled(false);
+		lblGender.setBounds(10, 177, 73, 14);
 		panelEditPerson.add(lblGender);
+		textFieldGender = new JTextField();
+		textFieldGender.setEnabled(false);
+		textFieldGender.setBounds(85, 174, 90, 20);
+		panelEditPerson.add(textFieldGender);
+		textFieldGender.setColumns(10);
 		
-		textFieldEditPersonGender = new JTextField();
-		textFieldEditPersonGender.setBounds(97, 132, 86, 20);
-		panelEditPerson.add(textFieldEditPersonGender);
-		textFieldEditPersonGender.setColumns(10);
-		
-		JLabel lblSalary = new JLabel("Salary");
-		lblSalary.setBounds(10, 176, 46, 14);
-		panelEditPerson.add(lblSalary);
-		
-		JButton btnEditSalary = new JButton("Edit");
-		btnEditSalary.addActionListener(new ActionListener() {
+		JButton btnOK = new JButton("OK");
+		btnOK.setBounds(10, 276, 89, 23);
+		btnOK.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new EditSalary();
+				// Save changes to the Person object
+				member.firstName = textFieldFirstName.getText();
+				member.lastName = textFieldLastName.getText();
+				
+				// Update the list in the main window
+				FamilyBudgetApp.updateList();
+				FamilyBudgetApp.updateButtons();;
+				editPerson.dispatchEvent(new WindowEvent(editPerson, WindowEvent.WINDOW_CLOSING));
 			}
 		});
-		btnEditSalary.setBounds(97, 172, 89, 23);
-		panelEditPerson.add(btnEditSalary);
-		
-		JButton btnExpenses = new JButton("Expenses");
-		btnExpenses.setBounds(10, 234, 89, 23);
-		panelEditPerson.add(btnExpenses);
-		
-		JButton btnOkay = new JButton("Okay");
-		btnOkay.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				Person newPerson = new Person();
-				newPerson.firstName = textFieldEditPersonFirstName.getText();
-				newPerson.lastName = textFieldEditPersonLastName.getText();
-				members.add(newPerson);
-				Vector<String> listData = new Vector();
-				for (Person p : members) {
-					listData.add(p.firstName + " " + p.lastName);
-				}
-				list.setListData(listData);
-				list.revalidate();
-				list.repaint();
-			}
-		});
-		btnOkay.setBounds(109, 234, 89, 23);
-		panelEditPerson.add(btnOkay);
+		panelEditPerson.add(btnOK);
 		
 		JButton btnCancel = new JButton("Cancel");
-		btnCancel.setBounds(208, 234, 89, 23);
+		btnCancel.setBounds(239, 276, 89, 23);
+		btnCancel.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				editPerson.dispatchEvent(new WindowEvent(editPerson, WindowEvent.WINDOW_CLOSING));
+			}
+		});
 		panelEditPerson.add(btnCancel);
-		editPerson.setVisible(true);
+		
+		JButton btnIncome = new JButton("Personal Income...");
+		btnIncome.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new EditIncome(member);
+			}
+		});
+		btnIncome.setBounds(10, 225, 154, 23);
+		panelEditPerson.add(btnIncome);
+		
+		JButton btnExpenses = new JButton("Personal Expenses...");
+		btnExpenses.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new ExpensesWindow(member.expenses, member.getFullName());
+			}
+		});
+		btnExpenses.setBounds(185, 225, 143, 23);
+		panelEditPerson.add(btnExpenses);
 		editPerson.setResizable(false);
-		editPerson.setSize(428, 332);
+		editPerson.setSize(346, 335);
+		Rectangle screenSize = editPerson.getGraphicsConfiguration().getBounds();
+		editPerson.setLocation(screenSize.width / 2 - editPerson.getWidth() / 2, screenSize.height / 2 - editPerson.getHeight() / 2);
+		editPerson.setVisible(true);
+		editPerson.setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[]{textFieldFirstName, textFieldLastName, textFieldDateOfBirthDay, textFieldDateOfBirthMonth, textFieldDateOfBirthYear, textFieldGender, btnOK, btnCancel}));
 		
 	}
 }
