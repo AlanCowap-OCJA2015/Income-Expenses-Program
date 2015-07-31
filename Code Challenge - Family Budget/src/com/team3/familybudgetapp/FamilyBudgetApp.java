@@ -4,9 +4,10 @@ import java.awt.EventQueue;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Vector;
+import java.io.File;
 
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -127,6 +128,20 @@ public class FamilyBudgetApp extends JFrame {
 
 		// Save the current family data file
 		btnSave = new JButton("Save");
+		btnSave.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser jfc = new JFileChooser(System.getProperty("user.dir"));
+				int rc = jfc.showDialog(null, "Select Data File");
+				if (rc == JFileChooser.APPROVE_OPTION) {
+					File file = jfc.getSelectedFile();
+					String filename = file.getAbsolutePath();
+					System.out.println ("User wants to save to " + filename);
+				} else {
+					System.out.println("User cancelled the file chooser.");
+				}
+				return; 
+			}
+		});
 		btnSave.setBounds(266, 162, 64, 23);
 		contentPaneMainWindow.add(btnSave);
 
@@ -174,7 +189,9 @@ public class FamilyBudgetApp extends JFrame {
 	} // End of FamilyBudgetApp window handlers
 
 	
-	// Update the contents of the listbox with the current family member list
+	/**
+	 *  Update the contents of the listbox with the current family member list
+	 */
 	public static void updateList () {
 		String[] listData = new String[family.members.size()];
 		for (int p = 0; p < family.members.size(); ++p) { 
@@ -186,6 +203,10 @@ public class FamilyBudgetApp extends JFrame {
 
 	}
 	
+	/**
+	 * Set the remove and edit buttons as enabled or disabled depending on whether
+	 * there are members in the family and one of them has been selected in the list
+	 */
 	public static void updateButtons () {
 		if ((FamilyBudgetApp.family.members.size() > 0) && (list.getSelectedIndex() >= 0)) {
 			btnRemovePerson.setEnabled(true);
