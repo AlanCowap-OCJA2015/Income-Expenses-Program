@@ -9,10 +9,18 @@ import java.util.ArrayList;
  */
 public class Family {
 
-	String description;
+	private String description;
 	
 	ArrayList<Person> members = new ArrayList<Person>();
 	
 	ArrayList<Expense> expenses = new ArrayList<Expense>();
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
 	
 }
