@@ -1,11 +1,12 @@
 package com.team3.familybudgetapp;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
-import java.util.Vector;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -15,9 +16,13 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 
+import org.eclipse.wb.swing.FocusTraversalOnArray;
+
 public class RemovePerson {
 	public RemovePerson(final JList list, final ArrayList<Person> members, final int personIndex){
 		final JFrame removePerson = new JFrame("Remove Person");
+		Rectangle screenSize = removePerson.getGraphicsConfiguration().getBounds();
+		removePerson.setResizable(false);
 		removePerson.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		try 
 		{
@@ -39,14 +44,8 @@ public class RemovePerson {
 		btnOkay.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				members.remove(personIndex);
-				Vector<String> listData = new Vector();
-				for (Person p : members) {
-					listData.add(p.firstName + " " + p.lastName);
-				}
-				list.setListData(listData);
-				list.revalidate();
-				list.repaint();
-				
+				FamilyBudgetApp.updateList();
+				FamilyBudgetApp.updateButtons();
 				removePerson.dispatchEvent(new WindowEvent(removePerson, WindowEvent.WINDOW_CLOSING));
 			}
 		});
@@ -61,9 +60,10 @@ public class RemovePerson {
 		});
 		btnCancel.setBounds(178, 96, 89, 23);
 		panelRemovePerson.add(btnCancel);
+		removePerson.setBounds(300, 200, 284, 156);
+		removePerson.setLocation(screenSize.width / 2 - removePerson.getWidth() / 2, screenSize.height / 2 - removePerson.getHeight() / 2);
 		removePerson.setVisible(true);
-		removePerson.setResizable(false);
-		removePerson.setSize(283, 155);
+		removePerson.setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[]{btnOkay, btnCancel}));
 		
 	}
 }
