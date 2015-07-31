@@ -187,12 +187,12 @@ public class FamilyBudgetApp extends JFrame {
 	}
 	
 	public static void updateButtons () {
-		if (FamilyBudgetApp.family.members.size() == 0) {
-			btnRemovePerson.setEnabled(false);
-			btnEditPerson.setEnabled(false);
-		} else {
+		if ((FamilyBudgetApp.family.members.size() > 0) && (list.getSelectedIndex() >= 0)) {
 			btnRemovePerson.setEnabled(true);
 			btnEditPerson.setEnabled(true);
+		} else {
+			btnRemovePerson.setEnabled(false);
+			btnEditPerson.setEnabled(false);
 		}
 	}
 	
