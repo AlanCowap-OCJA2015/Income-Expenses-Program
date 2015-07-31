@@ -22,19 +22,19 @@ public class Person {
 	
 
 	public Person(String name, FamilyRole familyRole, double salary, double hoursWorked,
-			boolean isAfterTax){
+			boolean isAfterTax, double taxRate){
 		this.name = name;
 		this.familyRole = familyRole;
-		salary = calculateTax(salary, isAfterTax);
+		salary = calculateTax(salary, isAfterTax, taxRate);
 		this.salary = calculateSalary(salary, hoursWorked);
 		
 		
 	}
 	
-	public Person(String name, FamilyRole familyRole, double salary, boolean isAfterTax){
+	public Person(String name, FamilyRole familyRole, double salary, boolean isAfterTax,double taxRate){
 		this.name = name;
 		this.familyRole = familyRole;
-		this.salary = calculateTax(salary, isAfterTax);
+		this.salary = calculateTax(salary, isAfterTax,taxRate);
 		
 	}
 	
@@ -43,7 +43,7 @@ public class Person {
 		this.familyRole = familyRole;
 	}
 	
-	private double calculateTax(double salary, boolean isAfterTax){
+	private double calculateTax(double salary, boolean isAfterTax, double taxRate){
 		if(isAfterTax){
 			return salary;
 		}else{

@@ -48,6 +48,9 @@ public class Expense {
 	}
 	
 	public double getAmount(String timeframe){
+		if(!isRecurring()){
+			return amount;
+		}
 		switch(timeframe.toUpperCase()){
 		case "WEEKLY": return amount/52;
 		case "MONTHLY": return amount/12;

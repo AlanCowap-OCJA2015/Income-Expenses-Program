@@ -121,7 +121,7 @@ public class ExpensesGui extends JFrame {
 				IncomeExpenses.runReport();
 			}
 		});
-		gotoReport.setBounds(152, 126, 132, 23);
+		gotoReport.setBounds(152, 126, 162, 23);
 		contentPane.add(gotoReport);
 		
 	}

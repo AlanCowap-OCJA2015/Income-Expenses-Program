@@ -31,6 +31,7 @@ public class FamilyGui extends JFrame {
 	private JTextField hoursTextField;
 	private int familySize = 0;
 	private int currentFamilyMember = 1;
+	private JTextField taxRateTextField;
 
 	/**
 	 * Launch the application.
@@ -53,7 +54,7 @@ public class FamilyGui extends JFrame {
 	 */
 	public FamilyGui() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 335, 301);
+		setBounds(100, 100, 365, 240);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(null);
@@ -93,20 +94,42 @@ public class FamilyGui extends JFrame {
 		lblRole.setBounds(10, 115, 28, 14);
 		contentPane.add(lblRole);
 		
-		final JLabel wagesLabel = new JLabel("Wages");
-		wagesLabel.setBounds(10, 176, 41, 14);
+		final JLabel wagesLabel = new JLabel("Wages:");
+		wagesLabel.setBounds(274, 22, 65, 14);
 		contentPane.add(wagesLabel);
 		
+
+		final JLabel taxRateLabel = new JLabel("Tax Rate:");
+		taxRateLabel.setBounds(163, 115, 65, 14);
+		contentPane.add(taxRateLabel);
+		
+		taxRateTextField = new JTextField();
+		taxRateTextField.setBounds(163, 140, 56, 20);
+		contentPane.add(taxRateTextField);
+		taxRateTextField.setColumns(10);
+		
 		final JCheckBox afterTax = new JCheckBox("After tax?");
-		afterTax.setBounds(144, 172, 97, 23);
+		afterTax.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent arg0) {
+				if(afterTax.isSelected()){
+					taxRateTextField.setVisible(false);
+					taxRateLabel.setVisible(false);
+				}else{
+					taxRateLabel.setVisible(true);
+					taxRateTextField.setVisible(true);
+				}
+			}
+		});
+		
+		afterTax.setBounds(157, 79, 99, 23);
 		contentPane.add(afterTax);
 		
 		final JLabel hoursLabel = new JLabel("Hours:");
-		hoursLabel.setBounds(222, 207, 46, 14);
+		hoursLabel.setBounds(274, 115, 46, 14);
 		contentPane.add(hoursLabel);
 		
 		hoursTextField = new JTextField();
-		hoursTextField.setBounds(268, 204, 41, 20);
+		hoursTextField.setBounds(274, 140, 46, 20);
 		contentPane.add(hoursTextField);
 		hoursTextField.setColumns(10);
 		
@@ -123,9 +146,10 @@ public class FamilyGui extends JFrame {
 				}
 			}
 		});
-		timeForSalary.addItem("Hourly");
 		timeForSalary.addItem("Yearly");
-		timeForSalary.setBounds(244, 173, 65, 20);
+		timeForSalary.addItem("Hourly");
+		
+		timeForSalary.setBounds(274, 80, 65, 20);
 		
 		
 		final JCheckBox earner = new JCheckBox("Earner?");
@@ -136,8 +160,9 @@ public class FamilyGui extends JFrame {
 					wagesTextField.setVisible(true);
 					afterTax.setVisible(true);
 					timeForSalary.setVisible(true);
-					hoursLabel.setVisible(true);
-					hoursTextField.setVisible(true);
+					taxRateTextField.setVisible(true);
+					taxRateLabel.setVisible(true);
+					
 				}else{
 					wagesLabel.setVisible(false);
 					wagesTextField.setVisible(false);
@@ -145,10 +170,12 @@ public class FamilyGui extends JFrame {
 					timeForSalary.setVisible(false);
 					hoursLabel.setVisible(false);
 					hoursTextField.setVisible(false);
+					taxRateTextField.setVisible(false);
+					taxRateLabel.setVisible(false);
 				}
 			}
 		});
-		earner.setBounds(10, 136, 97, 23);
+		earner.setBounds(159, 18, 97, 23);
 		contentPane.add(earner);
 		
 		
@@ -166,7 +193,7 @@ public class FamilyGui extends JFrame {
 		nameTextField.setColumns(10);
 		
 		wagesTextField = new JTextField();
-		wagesTextField.setBounds(58, 173, 80, 20);
+		wagesTextField.setBounds(274, 47, 65, 20);
 		contentPane.add(wagesTextField);
 		wagesTextField.setColumns(10);
 		
@@ -252,18 +279,22 @@ public class FamilyGui extends JFrame {
 					boolean isEarner = earner.isSelected();
 					boolean isHourly = timeForSalary.getSelectedItem().toString().equals("Hourly");
 					boolean isAfterTax = afterTax.isSelected();
+					
 					Person p;
 					if(isEarner){
 						double salary = 0;
 						double hoursWorked = 0;
+						double taxRate = 0;
 						try{
 							salary = Double.parseDouble(wages);
 							hoursWorked = Double.parseDouble(hours);
+							taxRate = Double.parseDouble(taxRateTextField.getText());
 						}catch(NumberFormatException nfe){}
+						
 						if(isHourly){
-							p = new Person(name,fRole,salary,hoursWorked,isAfterTax);
+							p = new Person(name,fRole,salary,hoursWorked,isAfterTax,taxRate);
 						}else{
-							p = new Person(name,fRole,salary,isAfterTax);
+							p = new Person(name,fRole,salary,isAfterTax,taxRate);
 						}
 					}else{
 						
@@ -279,8 +310,10 @@ public class FamilyGui extends JFrame {
 		});
 		
 		
-		submitButton.setBounds(10, 229, 118, 23);
+		submitButton.setBounds(10, 165, 118, 23);
 		contentPane.add(submitButton);
+		
+		
 		
 		
 		
@@ -290,6 +323,8 @@ public class FamilyGui extends JFrame {
 		timeForSalary.setVisible(false);
 		hoursLabel.setVisible(false);
 		hoursTextField.setVisible(false);
+		taxRateLabel.setVisible(false);
+		taxRateTextField.setVisible(false);
 		
 	}
 }

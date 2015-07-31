@@ -130,7 +130,7 @@ public class ReportGui extends JFrame {
 				frame = frame.toUpperCase();
 				
 				textPane.setText("Total Income: " + Family.calculateTotalIncome() + "\n" + line);
-				textPane.setText(textPane.getText() + "Expense:\t\tAmount Deducted:\tTotal:\n");
+				textPane.setText(textPane.getText() + "Expense:\t\tAmount Deducted:\tBalance:\n");
 				
 				for(Expense e:Family.expenses){
 					String s = "";
@@ -139,8 +139,11 @@ public class ReportGui extends JFrame {
 						s += ' ';
 					}
 							
-					
-					textPane.setText(textPane.getText() + e.getName() + s +" \t-" + e.getAmount(frame) + "   " + Family.calculateSpareMoney(frame, e) + "\n");
+					String formattedAmount = "" + e.getAmount(frame);
+					formattedAmount = formattedAmount.substring(0, formattedAmount.indexOf('.') + 3);
+					String formattedSpare = "" + Family.calculateSpareMoney(frame, e);
+					formattedSpare = formattedSpare.substring(0, formattedSpare.indexOf('.') + 3);
+					textPane.setText(textPane.getText() + e.getName() + s +" \t-€" + formattedAmount + "   \t\t€" + formattedSpare + "\n");
 				
 				
 				}
