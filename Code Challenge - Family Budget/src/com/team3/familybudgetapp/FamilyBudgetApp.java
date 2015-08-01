@@ -1,12 +1,15 @@
 package com.team3.familybudgetapp;
 
+
+
 import java.awt.EventQueue;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Vector;
+import java.io.File;
 
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -26,7 +29,7 @@ import javax.swing.event.ListSelectionListener;
  *  - How many are earners and non-earners
  *  - Specify amout
  */
-public class FamilyBudgetApp extends JFrame {
+public class FamilyBudgetApp extends JFrame implements ActionListener{
 
 	private JPanel contentPaneMainWindow;
 
@@ -43,6 +46,7 @@ public class FamilyBudgetApp extends JFrame {
 	static JLabel lblFamilyMembers;
 	static JButton btnEditExpenses;
 	static JButton btnReports;
+	JFileChooser fc;
 	
 	static public JFrame familyBudgetAppWindow;
 	
@@ -52,7 +56,7 @@ public class FamilyBudgetApp extends JFrame {
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
-//				new TestFamily(family);
+				new TestFamily(family);
 				try {
 					FamilyBudgetApp frame = new FamilyBudgetApp();
 					updateButtons();
@@ -65,13 +69,44 @@ public class FamilyBudgetApp extends JFrame {
 			}
 		});
 	}
-
+	/*
+	 * Copying the style for this from the FileChooserDemo class from java oracle tutorial. 
+	 * It would seem logical that it would be more efficient to have a single listener for all the buttons 
+	 * instead of a separate listener for each button.
+	 * Disregard above, still need listeners on each button. Is tidier though. 
+	 */
+	public void actionPerformed(ActionEvent e) {
+		// a switch would be obvious here, except that e.getSource returns an object and hence won't work with switch. 
+		if (e.getSource() == btnAddPerson){
+			new AddPerson(family.members);
+		} else if (e.getSource() == btnRemovePerson){
+			new RemovePerson(list, family.members, list.getSelectedIndex());
+		} else if (e.getSource() == btnEditPerson){
+			new EditPerson(family.members.get(list.getSelectedIndex()));
+		} else if (e.getSource() == btnEditExpenses){
+			new ExpensesWindow(family.expenses, "the family");
+		} else if (e.getSource() == btnReports){
+			new Reports(family);
+		} else if (e.getSource() == btnSave){
+			int returnVal = fc.showSaveDialog(FamilyBudgetApp.this);
+			if (returnVal == JFileChooser.APPROVE_OPTION){
+				File file = fc.getSelectedFile();
+				Reports.saveDataFile(family, file);
+			}
+		} else if (e.getSource() == btnLoad){
+			int returnVal = fc.showOpenDialog(FamilyBudgetApp.this);
+			if (returnVal == JFileChooser.APPROVE_OPTION){
+				File file = fc.getSelectedFile();
+				//insert call to load file method here.
+			}
+		}
+	}
 	
 	/**
 	 * Create the frame.
 	 */
 	public FamilyBudgetApp() {
-		
+		fc = new JFileChooser();
 		screenSize = this.getGraphicsConfiguration().getBounds();
 		familyBudgetAppWindow = this;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -92,62 +127,75 @@ public class FamilyBudgetApp extends JFrame {
 		// Add a person to the family members list
 		btnAddPerson = new JButton("Add Member");
 		btnAddPerson.setBounds(266, 37, 134, 23);
-		btnAddPerson.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				new AddPerson(family.members);
-			}
-		});
+		btnAddPerson.addActionListener(this);
+//		Commenting this out to put in single listener method above. 
+//		btnAddPerson.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent arg0) {
+//				new AddPerson(family.members);
+//			}
+//		});
 		contentPaneMainWindow.add(btnAddPerson);
 
 		// Remove a person from the family members list
 		btnRemovePerson = new JButton("Remove Member");
 		btnRemovePerson.setBounds(266, 71, 134, 23);
-		btnRemovePerson.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				new RemovePerson(list, family.members, list.getSelectedIndex());
-			}
-		});
+//		Commenting this out to put in single listener method above. 
+//		btnRemovePerson.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				new RemovePerson(list, family.members, list.getSelectedIndex());
+//			}
+//		});
+		// also seem to require
+		btnRemovePerson.addActionListener(this);
 		contentPaneMainWindow.add(btnRemovePerson);
 
 		// Edit the details of a family member
 		btnEditPerson = new JButton("Edit Member");
 		btnEditPerson.setBounds(266, 105, 134, 23);
 		btnEditPerson.setEnabled(false);
-		btnEditPerson.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				new EditPerson(family.members.get(list.getSelectedIndex()));
-			}
-		});
+		btnEditPerson.addActionListener(this);
+//		Commenting this out to put in single listener method above.
+//		btnEditPerson.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				new EditPerson(family.members.get(list.getSelectedIndex()));
+//			}
+//		});
 		contentPaneMainWindow.add(btnEditPerson);
 
 		// Load a family data file
 		btnLoad = new JButton("Load");
 		btnLoad.setBounds(336, 162, 64, 23);
 		contentPaneMainWindow.add(btnLoad);
+		btnLoad.addActionListener(this);
 
 		// Save the current family data file
 		btnSave = new JButton("Save");
 		btnSave.setBounds(266, 162, 64, 23);
 		contentPaneMainWindow.add(btnSave);
+		btnSave.addActionListener(this);
 
 		// Edit the family expenses list
 		btnEditExpenses = new JButton("Family Expenses...");
 		btnEditExpenses.setBounds(266, 235, 134, 23);
-		btnEditExpenses.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				new ExpensesWindow(family.expenses, "the family");
-			}
-		});
+		btnEditExpenses.addActionListener(this);
+//		Commenting this out to put in single listener method above.
+//		btnEditExpenses.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent arg0) {
+//				new ExpensesWindow(family.expenses, "the family");
+//			}
+//		});
 		contentPaneMainWindow.add(btnEditExpenses);
 
 		// Generate budget reports
 		btnReports = new JButton("Reports");
 		btnReports.setBounds(266, 269, 134, 23);
-		btnReports.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				new Reports(family);
-			}
-		});
+		btnReports.addActionListener(this);
+//		Commenting this out to put in single listener method above.
+//		btnReports.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				new Reports(family);
+//			}
+//		});
 		contentPaneMainWindow.add(btnReports);
 		
 		// Family members list heading

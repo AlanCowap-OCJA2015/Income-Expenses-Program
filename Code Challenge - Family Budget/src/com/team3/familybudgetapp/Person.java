@@ -20,17 +20,16 @@ public class Person {
 	double taxBracket = 0.0;
 	
 	public Person(){
-		
 	}
 	public Person(String firstName, String lastName){
-		
+		this.setFirstName(firstName);
+		this.setLastName(lastName);
 	}
 	public Person(String firstName, String lastName, boolean earner, double income, double taxBracket){
 		this (firstName, lastName);
 		this.setEarner(earner);
 		this.setIncome(income);
 		this.setTaxBracket(taxBracket);
-		
 	}
 
 	public String getFirstName() {

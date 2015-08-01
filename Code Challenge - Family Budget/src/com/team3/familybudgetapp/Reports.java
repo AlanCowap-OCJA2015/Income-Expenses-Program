@@ -14,38 +14,60 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextField;
+import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.UIManager;
-import javax.swing.JTextArea;
 
 public class Reports {
 	
-	private Person thisPerson = new Person();
 	public static String generateReportText(Family family){
 		String textToDisplay = null;
 		double totalNetIncome = 0.0;
 		double totalExpense = 0.0;
 		textToDisplay = (family.getDescription() + "\r\n");
 		for (Expense expense: family.expenses){
-			textToDisplay += (expense.getDescription() + "\t\t\t" + expense.getAmount() + "\r\n");
+			textToDisplay += (expense.getDescription() + "\t" + expense.getAmount() + "\r\n");
 			totalExpense += expense.getAmount();
 		}
 		for (Person person: family.members){
 			totalNetIncome += person.getNetIncome(); 
-			textToDisplay += (person.toString() + "\r\n\t\tGross Income: " + person.getIncome() + "\r\n\t\tNet Income: " + person.getNetIncome());
+			textToDisplay += (person.toString() + "\r\n");
+			if (person.isEarner()){
+				textToDisplay += ("\t\tGross Income: " + person.getIncome() + "\r\n\t\tNet Income: " + person.getNetIncome() + "\r\n");
+			}
 			for (Expense expense: person.expenses){
-				textToDisplay += (expense.getDescription() + "\t\t\t" + expense.getAmount() + "\r\n");
+				textToDisplay += (expense.getDescription() + "\t" + expense.getAmount() + "\r\n");
 				totalExpense += expense.getAmount();
 			}
 		}
 		textToDisplay += ("\t\tTotal Net income:\t " + totalNetIncome + "\r\n");
-		textToDisplay += ("\t\tTotal expenses:\t " + totalExpense + "\r\n");
-		textToDisplay += ("\nNet Disposable income: \t\t" + (totalNetIncome - totalExpense));
+		textToDisplay += ("\t\tTotal expenses:\t\t " + totalExpense + "\r\n");
+		textToDisplay += ("\r\nNet Disposable income: \t\t\t" + (totalNetIncome - totalExpense));
 		
 		return textToDisplay;
 	}
-	
+	public static void saveDataFile(Family family, File fileName){
+//		File fileName = new File(family.getDescription() + ".dat");
+		PrintWriter outfile = null;
+		try {
+			outfile = new PrintWriter(new BufferedWriter(new FileWriter(fileName)));
+			outfile.println("£" + family.getDescription());
+			for (Expense expense : family.expenses){
+				outfile.println("$" + expense.getDescription() + "\t" + expense.getAmount());
+			}
+			for (Person person : family.getMembers()){
+				outfile.println("%" + person.getFirstName() + "\t" + person.getLastName() + "\t" + 
+						(person.isEarner()? "1" : "0") + "\t" + person.getIncome() + "\t" + person.getTaxBracket());
+				for (Expense expense : person.expenses){
+					outfile.println("$" + expense.getDescription() + "\t" + expense.getAmount());
+				}
+			}
+			
+		} catch (Exception e) {
+		} finally {
+			outfile.close();
+		}
+	}
 	public Reports(final Family family){
 		final JFrame reports = new JFrame("Reports");
 		final String reportText = Reports.generateReportText(family);
@@ -103,29 +125,13 @@ public class Reports {
 		panelAddPerson.add(btnSaveText);
 		
 		JButton BtnSaveData = new JButton("Export to data file");
-		btnOkay.addActionListener(new ActionListener() {
+		BtnSaveData.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String textToDisplay = null;
-				double totalNetIncome = 0.0;
-				double totalExpense = 0.0;
-				textToDisplay = (family.getDescription() + "\n");
-				for (Expense expense: family.expenses){
-					textToDisplay += (expense.getDescription() + "\t\t\t" + expense.getAmount() + "\n");
-					totalExpense += expense.getAmount();
-				}
-				for (Person person: family.members){
-					totalNetIncome += person.getNetIncome(); 
-					textToDisplay += (person.toString() + "\n\t\tGross Income: " + person.getIncome() + "\n\t\tNet Income: " + person.getNetIncome());
-					for (Expense expense: person.expenses){
-						textToDisplay += (expense.getDescription() + "\t\t\t" + expense.getAmount() + "\n");
-						totalExpense += expense.getAmount();
-					}
-				}
-				textToDisplay += ("\t\tTotal Net income:\t " + totalNetIncome + "\n");
-				textToDisplay += ("\t\tTotal expenses:\t " + totalExpense + "\n");
-				textToDisplay += ("\nNet Disposable income: \t\t" + (totalNetIncome - totalExpense));
+				File file = new File(family.getDescription() + ".dat");
+				Reports.saveDataFile(family, file);
 			}
 		});
+		
 		BtnSaveData.setBounds(283, 254, 141, 23);
 		panelAddPerson.add(BtnSaveData);
 		reports.setVisible(true);
