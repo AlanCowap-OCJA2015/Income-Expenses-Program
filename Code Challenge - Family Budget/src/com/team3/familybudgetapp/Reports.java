@@ -140,7 +140,7 @@ public class Reports {
 			}
 			for (Person person : family.getMembers()){
 				outfile.println("%" + person.getFirstName() + "\t" + person.getLastName() + "\t" + 
-						(person.isEarner()? "1" : "0") + "\t" + person.getIncome() + "\t" + person.getTaxBracket());
+						(person.isEarner()? "1" : "0") + "\t" + person.getIncome() + "\t" + person.getTaxCutOff());
 				for (Expense expense : person.expenses){
 					outfile.println("$" + expense.getDescription() + "\t" + expense.getAmount());
 				}

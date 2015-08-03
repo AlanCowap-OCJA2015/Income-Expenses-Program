@@ -2,7 +2,6 @@ package com.team3.familybudgetapp;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 
 /**
  * @author Kevin Phair, Seamus O'Toole
@@ -17,7 +16,7 @@ public class Person {
 	boolean earner = false;
 	ArrayList<Expense> expenses = new ArrayList<Expense>();
 	double income = 0.0;
-	double taxBracket = 0.0;
+	double taxCutOff = 33800.0;
 	
 	public Person(){
 	}
@@ -25,11 +24,11 @@ public class Person {
 		this.setFirstName(firstName);
 		this.setLastName(lastName);
 	}
-	public Person(String firstName, String lastName, boolean earner, double income, double taxBracket){
+	public Person(String firstName, String lastName, boolean earner, double income, double taxCutOff){
 		this (firstName, lastName);
 		this.setEarner(earner);
 		this.setIncome(income);
-		this.setTaxBracket(taxBracket);
+		this.setTaxCutOff(taxCutOff);
 	}
 
 	public String getFirstName() {
@@ -68,17 +67,24 @@ public class Person {
 	public void setIncome(double income) {
 		this.income = income;
 	}
-	public double getTaxBracket() {
-		return taxBracket;
+	public double getTaxCutOff() {
+		return taxCutOff;
 	}
-	public void setTaxBracket(double taxBracket) {
-		this.taxBracket = taxBracket;
+	public void setTaxCutOff(double taxCutOff) {
+		this.taxCutOff = taxCutOff;
 	}
 	public String toString(){
 		return (this.lastName + ", " + this.firstName);
 	}
 	public double getNetIncome(){
-		return (this.getIncome()-(this.getIncome()*this.getTaxBracket()));
+		double lowerRateCutOff = this.getTaxCutOff();
+		double lowerRate = 0.2;
+		double higherRate = 0.41;
+		double income = this.getIncome();
+		double taxPaid = (income > lowerRateCutOff? ((income - lowerRateCutOff) * higherRate) + (lowerRate * lowerRateCutOff):
+							income * lowerRate);
+		return income - taxPaid;
+//		return (this.getIncome()-(this.getIncome()*this.getTaxBracket()));
 	}
 
 	public String getFullName() {
