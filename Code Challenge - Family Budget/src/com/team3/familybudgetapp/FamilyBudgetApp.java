@@ -38,12 +38,12 @@ public class FamilyBudgetApp extends JFrame implements ActionListener{
 	public Rectangle screenSize;
 	
 	static JList list;
+	static JLabel lblFamilyMembers;
 	static JButton btnRemovePerson;
 	static JButton btnEditPerson;
 	static JButton btnLoad;
 	static JButton btnSave;
 	static JButton btnAddPerson;
-	static JLabel lblFamilyMembers;
 	static JButton btnEditExpenses;
 	static JButton btnReports;
 	JFileChooser fc;
@@ -97,7 +97,9 @@ public class FamilyBudgetApp extends JFrame implements ActionListener{
 			int returnVal = fc.showOpenDialog(FamilyBudgetApp.this);
 			if (returnVal == JFileChooser.APPROVE_OPTION){
 				File file = fc.getSelectedFile();
-				//insert call to load file method here.
+				family = new Family();
+				Reports.loadFamily(family, file);
+				FamilyBudgetApp.updateList ();
 			}
 		}
 	}
@@ -106,7 +108,7 @@ public class FamilyBudgetApp extends JFrame implements ActionListener{
 	 * Create the frame.
 	 */
 	public FamilyBudgetApp() {
-		fc = new JFileChooser();
+		fc = new JFileChooser(System.getProperty("user.dir"));
 		screenSize = this.getGraphicsConfiguration().getBounds();
 		familyBudgetAppWindow = this;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
