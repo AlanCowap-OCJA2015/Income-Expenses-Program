@@ -22,8 +22,15 @@ import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 
 import org.eclipse.wb.swing.FocusTraversalOnArray;
+
+import com.team3.familybudgetapp.Expense.Recurrences;
+
 import java.awt.Dialog.ModalExclusionType;
 import java.awt.Dialog.ModalityType;
+import javax.swing.JComboBox;
+import javax.swing.DefaultComboBoxModel;
+import java.awt.event.ItemListener;
+import java.awt.event.ItemEvent;
 
 public class EditExpense extends JDialog {
 	private JTextField textFieldDescription;
@@ -34,6 +41,8 @@ public class EditExpense extends JDialog {
 	private JLabel lblAmount;
 	private final JPanel panelEditExpense;
 	private final JDialog editExpense;
+	private final JComboBox comboBox;
+	private final JLabel lblRecurs;
 
 	/**
 	 * TODO Change references to ExpensesWindow to parentWindow which will be passed in 
@@ -71,6 +80,7 @@ public class EditExpense extends JDialog {
 		editExpense.getRootPane ().registerKeyboardAction (enterListener, KeyStroke.getKeyStroke (KeyEvent.VK_ENTER, 0),
 				JComponent.WHEN_IN_FOCUSED_WINDOW);
 		
+		// Expense description
 		lblDescription = new JLabel("Description");
 		lblDescription.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblDescription.setBounds(10, 14, 65, 14);
@@ -80,19 +90,37 @@ public class EditExpense extends JDialog {
 		textFieldDescription.grabFocus();
 		panelEditExpense.add(textFieldDescription);
 		
+		// Expense amount
 		lblAmount = new JLabel("Amount");
 		lblAmount.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblAmount.setBounds(10, 45, 67, 14);
 		panelEditExpense.add(lblAmount);
 		textFieldAmount = new JTextField();
-		textFieldAmount.setBounds(85, 42, 105, 20);
+		textFieldAmount.setBounds(85, 42, 77, 20);
 		panelEditExpense.add(textFieldAmount);
 
-		if (expense.description != null && expense.description.length () > 0) {
-			textFieldDescription.setText (expense.description);
-			textFieldAmount.setText (String.format("%.2f", expense.amount));
-		}
+		// Recurring option label and combo box
+		lblRecurs = new JLabel("Recurs");
+		lblRecurs.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblRecurs.setBounds(172, 45, 46, 14);
+		panelEditExpense.add(lblRecurs);
+		comboBox = new JComboBox();
+		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Once-off", "Daily", "Weekly", "Monthly", "Yearly"}));
+		comboBox.setBounds(228, 42, 100, 22);
+		comboBox.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent arg0) {
+			}
+		});
+		panelEditExpense.add(comboBox);
 
+		// If expense object already defined, set the values of the controls accordingly
+		if (expense.getDescription() != null && expense.getDescription().length() > 0) {
+			textFieldDescription.setText (expense.getDescription());
+			textFieldAmount.setText (String.format("%.2f", expense.getAmount()));
+			comboBox.setSelectedIndex(expense.getRecurs().ordinal());
+		}
+		
+		// The OK buttons
 		btnOK = new JButton("OK");
 		btnOK.setBounds(10, 70, 89, 23);
 		btnOK.addActionListener(new ActionListener() {
@@ -118,8 +146,17 @@ public class EditExpense extends JDialog {
 							"Expense amount error", 
 							JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) != 0) return;
 					}
-					expense.amount = tempAmount;
-					expense.description = textFieldDescription.getText();
+					expense.setAmount (tempAmount);
+					expense.setDescription (textFieldDescription.getText());
+					switch (comboBox.getSelectedIndex()) {
+						case -1:
+						case 0: expense.setRecurs(Recurrences.ONCE); break;
+						case 1: expense.setRecurs(Recurrences.DAILY); break;
+						case 2: expense.setRecurs(Recurrences.WEEKLY); break;
+						case 3: expense.setRecurs(Recurrences.MONTHLY); break;
+						case 4: expense.setRecurs(Recurrences.YEARLY); break;
+						default: expense.setRecurs(Recurrences.ONCE); break;
+					}
 					editExpense.dispatchEvent(new WindowEvent(editExpense, WindowEvent.WINDOW_CLOSING));
 				}
 			}
@@ -134,12 +171,13 @@ public class EditExpense extends JDialog {
 			}
 		});
 		panelEditExpense.add(btnCancel);
+		
 		panelEditExpense.setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[]{textFieldDescription, textFieldAmount, btnOK, btnCancel, lblDescription, lblAmount}));
 		editExpense.setResizable(false);
 		editExpense.setSize(346, 128);
 		Rectangle screenSize = editExpense.getGraphicsConfiguration().getBounds();
 		editExpense.setLocation(screenSize.width / 2 - editExpense.getWidth() / 2, screenSize.height / 2 - editExpense.getHeight() / 2);
-		editExpense.setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[]{textFieldDescription, textFieldAmount, btnOK, btnCancel}));
+		editExpense.setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[]{textFieldDescription, textFieldAmount, comboBox, btnOK, btnCancel}));
 		editExpense.setVisible(true);
 		
 	}
