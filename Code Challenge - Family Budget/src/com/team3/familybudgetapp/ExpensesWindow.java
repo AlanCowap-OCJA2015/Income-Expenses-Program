@@ -27,15 +27,15 @@ import java.awt.Dialog.ModalityType;
 
 public class ExpensesWindow {
 	
-	static JLabel lblExpenseAmount;
-	static JButton btnAdd;
-	static JButton btnEdit;
-	static JButton btnRemove;
-	static JList list;
-	static JScrollPane scroller;
-	static JPanel panelEditExpenses;
 	static JDialog editExpenses;
-	static JTextField textFieldCurrentlySelectedExpense;
+	private JPanel panelEditExpenses;
+	private JLabel lblExpenseAmount;
+	private JButton btnAdd;
+	private JButton btnEdit;
+	private JButton btnRemove;
+	private JList list;
+	private JScrollPane scroller;
+	private JTextField textFieldCurrentlySelectedExpense;
 	private JLabel lblRecurs;
 
 
@@ -54,6 +54,7 @@ public class ExpensesWindow {
 		panelEditExpenses.setLayout(null);
 		editExpenses.getContentPane().add(BorderLayout.CENTER, panelEditExpenses);
 		
+		// Add a member
 		btnAdd = new JButton("Add");
 		btnAdd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -63,13 +64,14 @@ public class ExpensesWindow {
 				expenses.add(newExpense);
 				
 				// Update the list in the main window
-				ExpensesWindow.updateList(expenses);
-				ExpensesWindow.updateButtons(expenses);
+				updateList(expenses);
+				updateButtons(expenses);
 			}
 		});
 		btnAdd.setBounds(295, 10, 89, 23);
 		panelEditExpenses.add(btnAdd);
 		
+		// Remove a member
 		btnRemove = new JButton("Remove");
 		btnRemove.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -81,28 +83,30 @@ public class ExpensesWindow {
 
 					expenses.remove(list.getSelectedIndex());
 				}
-				ExpensesWindow.updateList(expenses);
-				ExpensesWindow.updateButtons(expenses);
+				updateList(expenses);
+				updateButtons(expenses);
 			}
 		});
 		btnRemove.setBounds(295, 45, 89, 23);
 		btnRemove.setEnabled(false);
 		panelEditExpenses.add(btnRemove);
 		
+		// Edit a member
 		btnEdit = new JButton("Edit");
 		btnEdit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				new EditExpense (expenses.get (list.getSelectedIndex ()));
 				
 				// Update the list in the main window
-				ExpensesWindow.updateList(expenses);
-				ExpensesWindow.updateButtons(expenses);;
+				updateList(expenses);
+				updateButtons(expenses);;
 			}
 		});
 		btnEdit.setBounds(295, 79, 89, 23);
 		btnEdit.setEnabled(false);
 		panelEditExpenses.add(btnEdit);
 		
+		// Member list
 		// Create the JScrollPane for the expenses list and add the listbox to it
 		scroller = new JScrollPane();
 		scroller.setBounds(10, 11, 275, 235);
@@ -125,22 +129,22 @@ public class ExpensesWindow {
 		});
 		scroller.setViewportView(list);
 		
+		// Selected expense amount
 		lblExpenseAmount = new JLabel("Selected expense");
 		lblExpenseAmount.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblExpenseAmount.setBounds(10, 260, 179, 14);
 		panelEditExpenses.add(lblExpenseAmount);
-
 		textFieldCurrentlySelectedExpense = new JTextField();
 		textFieldCurrentlySelectedExpense.setBounds(199, 257, 86, 20);
 		textFieldCurrentlySelectedExpense.setEditable(false);
 		textFieldCurrentlySelectedExpense.setHorizontalAlignment(SwingConstants.RIGHT);
 		panelEditExpenses.add(textFieldCurrentlySelectedExpense);
 		textFieldCurrentlySelectedExpense.setColumns(10);
-
 		lblRecurs = new JLabel("");
 		lblRecurs.setBounds(295, 257, 89, 20);
 		panelEditExpenses.add(lblRecurs);
 
+		// size, position and open the dialog window
 		panelEditExpenses.setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[]{btnAdd, btnRemove, btnEdit, list}));
 		editExpenses.setSize(400, 315);
 		Rectangle screenSize = editExpenses.getGraphicsConfiguration().getBounds();
@@ -152,7 +156,7 @@ public class ExpensesWindow {
 	}
 		
 	// Update the contents of the listbox with the current family member list
-	public static void updateList (ArrayList<Expense> expenses) {
+	public void updateList (ArrayList<Expense> expenses) {
 		String[] listData = new String[expenses.size()];
 		for (int e = 0; e < expenses.size(); ++e) { 
 			listData[e] = expenses.get(e).getDescription();  
@@ -162,7 +166,7 @@ public class ExpensesWindow {
 		list.repaint();
 	}
 
-	public static void updateButtons (ArrayList<Expense> expenses) {
+	public void updateButtons (ArrayList<Expense> expenses) {
 		if ((expenses.size() > 0) && (list.getSelectedIndex () >= 0)) {
 			btnRemove.setEnabled(true);
 			btnEdit.setEnabled(true);
