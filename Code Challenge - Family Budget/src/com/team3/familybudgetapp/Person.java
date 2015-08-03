@@ -12,11 +12,17 @@ import java.util.Date;
 public class Person {
 
 	String firstName = "";
+	String initials = "";
 	String lastName = "";
+	enum genders {MALE, FEMALE, OTHER}
+	genders gender = Person.genders.MALE;
+	String genderOther = "";
 	Calendar dob = null;
-	boolean earner = false;
+	boolean earner = false;				// Is an "earner" flag really necessary?
 	ArrayList<Expense> expenses = new ArrayList<Expense>();
 	double income = 0.0;
+	enum incomeSchedules {HOURLY, WEEKLY, MONTHLY}
+	incomeSchedules incomeSchedule = Person.incomeSchedules.HOURLY;
 	double taxBracket = 0.0;
 	
 	public Person(){
@@ -30,7 +36,6 @@ public class Person {
 		this.setEarner(earner);
 		this.setIncome(income);
 		this.setTaxBracket(taxBracket);
-		
 	}
 
 	public String getFirstName() {
@@ -38,6 +43,12 @@ public class Person {
 	}
 	public void setFirstName(String firstName) {
 		this.firstName = firstName;
+	}
+	public String getInitials () {
+		return initials;
+	}
+	public void setInitials (String initials) {
+		this.initials = initials;
 	}
 	public String getLastName() {
 		return lastName;
@@ -50,6 +61,24 @@ public class Person {
 	}
 	public void setDob(Calendar dob) {
 		this.dob = dob;
+	}
+	public genders getGender () {
+		return gender;
+	}
+	public void setGender (genders gender) {
+		this.gender = gender;
+	}
+	public String getGenderOther () {
+		return genderOther;
+	}
+	public void setGenderOther (String genderOther) {
+		this.genderOther = genderOther;
+	}
+	public incomeSchedules getIncomeSchedule () {
+		return incomeSchedule;
+	}
+	public void setIncomeSchedule (incomeSchedules incomeSchedule) {
+		this.incomeSchedule = incomeSchedule;
 	}
 	public boolean isEarner() {
 		return earner;
@@ -83,7 +112,7 @@ public class Person {
 	}
 
 	public String getFullName() {
-		return firstName + (firstName.length() > 0 ? " " : "") + lastName;
+		return this.firstName + (this.firstName.length() > 0 ? " " : "") + (this.initials.length() > 0 ? " " : "") + this.lastName;
 	}
 	
 }
