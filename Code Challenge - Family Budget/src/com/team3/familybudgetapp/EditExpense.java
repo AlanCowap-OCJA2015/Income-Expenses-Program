@@ -5,15 +5,18 @@ import java.awt.Component;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -25,31 +28,23 @@ import org.eclipse.wb.swing.FocusTraversalOnArray;
 
 import com.team3.familybudgetapp.Expense.Recurrences;
 
-import java.awt.Dialog.ModalExclusionType;
-import java.awt.Dialog.ModalityType;
-import javax.swing.JComboBox;
-import javax.swing.DefaultComboBoxModel;
-import java.awt.event.ItemListener;
-import java.awt.event.ItemEvent;
-
 public class EditExpense extends JDialog {
+	private JDialog editExpense;
+	private JPanel panelEditExpense;
 	private JTextField textFieldDescription;
 	private JTextField textFieldAmount;
-	private final JButton btnCancel;
-	private final JButton btnOK;
-	private final JLabel lblDescription;
+	private JButton btnCancel;
+	private JButton btnOK;
+	private JLabel lblDescription;
 	private JLabel lblAmount;
-	private final JPanel panelEditExpense;
-	private final JDialog editExpense;
-	private final JComboBox comboBox;
-	private final JLabel lblRecurs;
+	private JComboBox comboBox;
+	private JLabel lblRecurs;
 
 	/**
 	 * TODO Change references to ExpensesWindow to parentWindow which will be passed in 
 	 * 
 	 */
 	public EditExpense(final Expense expense){
-		JList list = ExpensesWindow.list;
 		editExpense = new JDialog (ExpensesWindow.editExpenses, "Add Expense");
 		editExpense.setModalityType(ModalityType.DOCUMENT_MODAL);
 		editExpense.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -135,7 +130,11 @@ public class EditExpense extends JDialog {
 				} else {
 					double tempAmount;
 					if (textFieldAmount.getText().length() > 0) {
-						tempAmount = Double.parseDouble(textFieldAmount.getText());
+						try {
+							tempAmount = Double.parseDouble(textFieldAmount.getText());
+						} catch (Exception x) {
+							tempAmount = 0.0;
+						}
 					} else {
 						tempAmount = 0.0;
 					}
@@ -157,6 +156,7 @@ public class EditExpense extends JDialog {
 						case 4: expense.setRecurs(Recurrences.YEARLY); break;
 						default: expense.setRecurs(Recurrences.ONCE); break;
 					}
+					FamilyBudgetApp.setDataChanged();
 					editExpense.dispatchEvent(new WindowEvent(editExpense, WindowEvent.WINDOW_CLOSING));
 				}
 			}
