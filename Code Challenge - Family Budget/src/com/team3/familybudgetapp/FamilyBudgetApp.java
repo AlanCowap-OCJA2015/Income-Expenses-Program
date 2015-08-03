@@ -4,6 +4,7 @@ import java.awt.EventQueue;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
 import java.io.File;
 
 import javax.swing.JButton;
@@ -11,13 +12,16 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.ListModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.xml.transform.OutputKeys;
 
 /*
  * Specification
@@ -105,7 +109,15 @@ public class FamilyBudgetApp extends JFrame {
 		btnRemovePerson.setBounds(266, 71, 134, 23);
 		btnRemovePerson.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new RemovePerson(list, family.members, list.getSelectedIndex());
+				if (JOptionPane.showConfirmDialog (contentPaneMainWindow, 
+						"Deleting records cannot be undone\n"
+						+ "Do you want to proceed?", 
+						"Remove family member", 
+						JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == 0) {
+					family.members.remove(list.getSelectedIndex());
+				}
+				FamilyBudgetApp.updateList();
+				FamilyBudgetApp.updateButtons();
 			}
 		});
 		contentPaneMainWindow.add(btnRemovePerson);
@@ -123,6 +135,11 @@ public class FamilyBudgetApp extends JFrame {
 
 		// Load a family data file
 		btnLoad = new JButton("Load");
+		btnLoad.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new TestDialog ();
+			}
+		});
 		btnLoad.setBounds(336, 162, 64, 23);
 		contentPaneMainWindow.add(btnLoad);
 
