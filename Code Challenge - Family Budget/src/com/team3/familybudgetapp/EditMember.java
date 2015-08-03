@@ -2,31 +2,30 @@ package com.team3.familybudgetapp;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dialog.ModalityType;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
-import java.util.ArrayList;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.JRootPane;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
+import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 
 import org.eclipse.wb.swing.FocusTraversalOnArray;
-import javax.swing.SwingConstants;
 
-public class AddPerson {
+public class EditMember {
 	private JTextField textFieldFirstName;
 	private JTextField textFieldLastName;
 	private JTextField textFieldDay;
@@ -35,7 +34,7 @@ public class AddPerson {
 	private JTextField textField;
 	final JButton btnCancel;
 	final JButton btnOK;
-	final JFrame addPerson;
+	final JDialog addPerson;
 	JComboBox genderComboBox;
 	JLabel lblGender;
 	JLabel lblYear;
@@ -45,11 +44,19 @@ public class AddPerson {
 	JPanel panelAddPerson;
 	JLabel lblFirstName;
 	JLabel lblLastName;
-	private JTextField textFieldInitials;
+	private final JTextField textFieldInitials;
+	private final JLabel lblInitials;
+	private final JButton btnIncome;
+	private final JButton btnExpenses;
 
-	public AddPerson (final ArrayList<Person> members) {
-		JList list = FamilyBudgetApp.list;
-		addPerson = new JFrame ("Add Family Member");
+	/**
+	 * Create a modal dialog window which will block the main window until editing has been done
+	 * 
+	 * @param member to be edited
+	 */
+	public EditMember (final Person member) {
+		addPerson = new JDialog (FamilyBudgetApp.familyBudgetAppWindow, "Add Family Member");
+		addPerson.setModalityType(ModalityType.DOCUMENT_MODAL);
 		addPerson.setDefaultCloseOperation (JFrame.DISPOSE_ON_CLOSE);
 		try {
 			UIManager.setLookAndFeel (UIManager.getSystemLookAndFeelClassName ());
@@ -81,7 +88,7 @@ public class AddPerson {
 		addPerson.getRootPane ().registerKeyboardAction (enterListener, KeyStroke.getKeyStroke (KeyEvent.VK_ENTER, 0),
 				JComponent.WHEN_IN_FOCUSED_WINDOW);
 
-		// First name label and text field
+		// First name
 		lblFirstName = new JLabel ("First Name");
 		lblFirstName.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblFirstName.setBounds (10, 14, 67, 14);
@@ -91,7 +98,17 @@ public class AddPerson {
 		textFieldFirstName.grabFocus ();
 		panelAddPerson.add (textFieldFirstName);
 
-		// Last name label and text field
+		// Initials
+		lblInitials = new JLabel("Initials");
+		lblInitials.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblInitials.setBounds(224, 14, 40, 14);
+		panelAddPerson.add(lblInitials);
+		textFieldInitials = new JTextField();
+		textFieldInitials.setBounds(269, 11, 59, 20);
+		panelAddPerson.add(textFieldInitials);
+		textFieldInitials.setColumns(10);
+		
+		// Last name
 		lblLastName = new JLabel ("Last Name");
 		lblLastName.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblLastName.setBounds (10, 55, 67, 14);
@@ -156,19 +173,42 @@ public class AddPerson {
 		textField.setBounds (185, 139, 143, 20);
 		panelAddPerson.add (textField);
 
+		// Personal Income
+		btnIncome = new JButton("Personal Income...");
+		btnIncome.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new EditIncome(member);
+			}
+		});
+		btnIncome.setBounds(14, 171, 143, 23);
+		panelAddPerson.add(btnIncome);
+		
+		// Personal Expenses
+		btnExpenses = new JButton("Personal Expenses...");
+		btnExpenses.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new ExpensesWindow(member.expenses, member.getFullName());
+			}
+		});
+		btnExpenses.setBounds(185, 171, 143, 23);
+		panelAddPerson.add(btnExpenses);
+
+		// If the Person object has been sent in for editing, populate the values of the controls
+		if (member != null && member.getFullName().length() > 0) {
+			textFieldFirstName.setText(member.firstName);
+			textFieldInitials.setText(member.initials);
+			textFieldLastName.setText(member.lastName);
+		}
+
+		// OK and Cancel buttons
 		btnOK = new JButton ("OK");
 		btnOK.setBounds (16, 224, 89, 23);
 		btnOK.addActionListener (new ActionListener () {
 			public void actionPerformed (ActionEvent e) {
-				// Create a new Person object and add it to the ArrayList
-				Person newPerson = new Person ();
-				newPerson.firstName = textFieldFirstName.getText ();
-				newPerson.lastName = textFieldLastName.getText ();
-				members.add (newPerson);
-
-				// Update the list in the main window
-				FamilyBudgetApp.updateList ();
-				FamilyBudgetApp.updateButtons ();
+				// Update the Person object
+				member.firstName = textFieldFirstName.getText ();
+				member.initials = textFieldInitials.getText ();
+				member.lastName = textFieldLastName.getText ();
 				// Close our own window
 				addPerson.dispatchEvent (new WindowEvent (addPerson, WindowEvent.WINDOW_CLOSING));
 			}
@@ -184,26 +224,6 @@ public class AddPerson {
 		});
 		panelAddPerson.add (btnCancel);
 		
-		JLabel lblInitials = new JLabel("Initials");
-		lblInitials.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblInitials.setBounds(224, 14, 40, 14);
-		panelAddPerson.add(lblInitials);
-		
-		textFieldInitials = new JTextField();
-		textFieldInitials.setBounds(269, 11, 59, 20);
-		panelAddPerson.add(textFieldInitials);
-		textFieldInitials.setColumns(10);
-		
-		JButton btnIncome = new JButton("Personal Income...");
-		btnIncome.setEnabled(false);
-		btnIncome.setBounds(14, 171, 143, 23);
-		panelAddPerson.add(btnIncome);
-		
-		JButton btnExpenses = new JButton("Personal Expenses...");
-		btnExpenses.setEnabled(false);
-		btnExpenses.setBounds(185, 171, 143, 23);
-		panelAddPerson.add(btnExpenses);
-
 		addPerson.setResizable (false);
 		addPerson.setSize (346, 284);
 		Rectangle screenSize = addPerson.getGraphicsConfiguration ().getBounds ();
