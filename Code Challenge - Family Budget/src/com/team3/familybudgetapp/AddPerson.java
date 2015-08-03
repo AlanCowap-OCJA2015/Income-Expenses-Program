@@ -45,7 +45,7 @@ public class AddPerson {
 	JPanel panelAddPerson;
 	JLabel lblFirstName;
 	JLabel lblLastName;
-	private JTextField textField_1;
+	private JTextField textFieldInitials;
 
 	public AddPerson (final ArrayList<Person> members) {
 		JList list = FamilyBudgetApp.list;
@@ -189,10 +189,10 @@ public class AddPerson {
 		lblInitials.setBounds(224, 14, 40, 14);
 		panelAddPerson.add(lblInitials);
 		
-		textField_1 = new JTextField();
-		textField_1.setBounds(269, 11, 59, 20);
-		panelAddPerson.add(textField_1);
-		textField_1.setColumns(10);
+		textFieldInitials = new JTextField();
+		textFieldInitials.setBounds(269, 11, 59, 20);
+		panelAddPerson.add(textFieldInitials);
+		textFieldInitials.setColumns(10);
 		
 		JButton btnIncome = new JButton("Personal Income...");
 		btnIncome.setEnabled(false);
@@ -209,8 +209,7 @@ public class AddPerson {
 		Rectangle screenSize = addPerson.getGraphicsConfiguration ().getBounds ();
 		addPerson.setLocation (screenSize.width / 2 - addPerson.getWidth () / 2,
 				screenSize.height / 2 - addPerson.getHeight () / 2);
-		addPerson.setFocusTraversalPolicy (new FocusTraversalOnArray (new Component[] { textFieldFirstName,
-				textFieldLastName, textFieldDay, textFieldMonth, textFieldYear, btnOK, btnCancel }));
+		addPerson.setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[]{textFieldFirstName, textFieldInitials, textFieldLastName, textFieldDay, textFieldMonth, textFieldYear, genderComboBox, textField, btnIncome, btnExpenses, btnOK, btnCancel}));
 		addPerson.setVisible (true);
 
 	}
