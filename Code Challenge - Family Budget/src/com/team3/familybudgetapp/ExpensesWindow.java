@@ -36,6 +36,7 @@ public class ExpensesWindow {
 	static JPanel panelEditExpenses;
 	static JDialog editExpenses;
 	static JTextField textFieldCurrentlySelectedExpense;
+	private JLabel lblRecurs;
 
 
 	public ExpensesWindow(final ArrayList<Expense> expenses, String forWhom){
@@ -114,7 +115,9 @@ public class ExpensesWindow {
 			public void valueChanged(ListSelectionEvent arg0) {
 				updateButtons (expenses);
 				if (list.getSelectedIndex() >= 0) {
-					textFieldCurrentlySelectedExpense.setText(String.format("%.2f", expenses.get(list.getSelectedIndex()).amount));
+					Expense e = expenses.get(list.getSelectedIndex());
+					textFieldCurrentlySelectedExpense.setText(String.format("%.2f", e.getAmount()));
+					lblRecurs.setText(e.getRecursString());
 				} else {
 					textFieldCurrentlySelectedExpense.setText("");
 				}
@@ -134,7 +137,10 @@ public class ExpensesWindow {
 		panelEditExpenses.add(textFieldCurrentlySelectedExpense);
 		textFieldCurrentlySelectedExpense.setColumns(10);
 
-		
+		lblRecurs = new JLabel("");
+		lblRecurs.setBounds(295, 257, 89, 20);
+		panelEditExpenses.add(lblRecurs);
+
 		panelEditExpenses.setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[]{btnAdd, btnRemove, btnEdit, list}));
 		editExpenses.setSize(400, 315);
 		Rectangle screenSize = editExpenses.getGraphicsConfiguration().getBounds();
@@ -149,7 +155,7 @@ public class ExpensesWindow {
 	public static void updateList (ArrayList<Expense> expenses) {
 		String[] listData = new String[expenses.size()];
 		for (int e = 0; e < expenses.size(); ++e) { 
-			listData[e] = expenses.get(e).description;  
+			listData[e] = expenses.get(e).getDescription();  
 		}
 		list.setListData(listData);
 		list.revalidate();
