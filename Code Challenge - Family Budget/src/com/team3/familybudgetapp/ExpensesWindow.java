@@ -127,7 +127,6 @@ public class ExpensesWindow {
 		scroller.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		scroller.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		panelEditExpenses.add(scroller);
-		
 		table = new JTable();
 		scroller.setViewportView(table);
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -135,29 +134,7 @@ public class ExpensesWindow {
 		table.setShowVerticalLines(false);
 		table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent arg0) {
-				updateButtons(expenses);
-			}
-		});
-			
-		table.setModel(new DefaultTableModel(
-			new Object[][] { {"Test", new Double(0.0), "Once-Off"},},
-			new String[] {"Description", "Amount", "Recurring"}
-		) {
-			Class[] columnTypes = new Class[] { String.class, Double.class, String.class };
-			public Class getColumnClass(int columnIndex) {
-				return columnTypes[columnIndex];
-			}
-		});
-		table.getColumnModel().getColumn(0).setResizable(false);
-		table.getColumnModel().getColumn(0).setPreferredWidth(95);
-		table.getColumnModel().getColumn(1).setResizable(false);
-		table.getColumnModel().getColumn(1).setPreferredWidth(58);
-		table.getColumnModel().getColumn(2).setResizable(false);
-		table.getColumnModel().getColumn(2).setPreferredWidth(64);
-		table.getColumnModel().getColumn(1).setCellRenderer(new DefaultTableCellRenderer() {
-//			public DoubleRenderer() { super(); }
-			public void setValue (Object value) {
-				setText(value == null ? "" : String.format("%.2f", value));
+				updateButtons(expenses);		// Enable the Remove and Edit buttons once and item is selected
 			}
 		});
 
@@ -203,14 +180,23 @@ public class ExpensesWindow {
 				public Class getColumnClass(int columnIndex) {
 					return columnTypes[columnIndex];
 				}
+				boolean[] columnEditables = new boolean[] { false, false, false };
+				public boolean isCellEditable(int row, int column) {
+					return columnEditables[column];
+				}		
 			});
 		// Create a new cell renderer for the middle column
+		table.getColumnModel().getColumn(0).setResizable(false);
+		table.getColumnModel().getColumn(0).setPreferredWidth(95);
+		table.getColumnModel().getColumn(1).setResizable(false);
+		table.getColumnModel().getColumn(1).setPreferredWidth(58);
+		table.getColumnModel().getColumn(2).setResizable(false);
+		table.getColumnModel().getColumn(2).setPreferredWidth(64);
 		table.getColumnModel().getColumn(1).setCellRenderer(new DefaultTableCellRenderer() {
 			public void setValue (Object value) {
 				setText(value == null ? "" : String.format("%.2f", value));
 			}
 		});
-
 	
 	}
 
