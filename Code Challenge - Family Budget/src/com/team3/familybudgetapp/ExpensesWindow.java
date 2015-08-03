@@ -3,24 +3,27 @@ package com.team3.familybudgetapp;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import org.eclipse.wb.swing.FocusTraversalOnArray;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.event.ListSelectionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+import java.awt.Dialog.ModalityType;
 
 public class ExpensesWindow {
 	
@@ -31,12 +34,13 @@ public class ExpensesWindow {
 	static JList list;
 	static JScrollPane scroller;
 	static JPanel panelEditExpenses;
-	static JFrame editExpenses;
+	static JDialog editExpenses;
 	static JTextField textFieldCurrentlySelectedExpense;
 
 
 	public ExpensesWindow(final ArrayList<Expense> expenses, String forWhom){
-		editExpenses = new JFrame("Expenses Editor for " + forWhom);
+		editExpenses = new JDialog(FamilyBudgetApp.familyBudgetAppWindow, "Expenses Editor for " + forWhom);
+		editExpenses.setModalityType(ModalityType.APPLICATION_MODAL);
 		editExpenses.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		try 
 		{
@@ -52,7 +56,14 @@ public class ExpensesWindow {
 		btnAdd = new JButton("Add");
 		btnAdd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				new AddExpense (expenses);
+				Expense newExpense = new Expense ();
+				new EditExpense (newExpense);
+				
+				expenses.add(newExpense);
+				
+				// Update the list in the main window
+				ExpensesWindow.updateList(expenses);
+				ExpensesWindow.updateButtons(expenses);
 			}
 		});
 		btnAdd.setBounds(295, 10, 89, 23);
@@ -61,7 +72,16 @@ public class ExpensesWindow {
 		btnRemove = new JButton("Remove");
 		btnRemove.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new RemoveExpense (expenses, list.getSelectedIndex());
+				if (JOptionPane.showConfirmDialog (editExpenses, 
+						"Deleting an expense cannot be undone\n"
+						+ "Do you want to proceed?", 
+						"Remove expense from list", 
+						JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == 0) {
+
+					expenses.remove(list.getSelectedIndex());
+				}
+				ExpensesWindow.updateList(expenses);
+				ExpensesWindow.updateButtons(expenses);
 			}
 		});
 		btnRemove.setBounds(295, 45, 89, 23);
@@ -71,6 +91,11 @@ public class ExpensesWindow {
 		btnEdit = new JButton("Edit");
 		btnEdit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				new EditExpense (expenses.get (list.getSelectedIndex ()));
+				
+				// Update the list in the main window
+				ExpensesWindow.updateList(expenses);
+				ExpensesWindow.updateButtons(expenses);;
 			}
 		});
 		btnEdit.setBounds(295, 79, 89, 23);
@@ -132,12 +157,12 @@ public class ExpensesWindow {
 	}
 
 	public static void updateButtons (ArrayList<Expense> expenses) {
-		if (expenses.size() == 0) {
-			btnRemove.setEnabled(false);
-			btnEdit.setEnabled(false);
-		} else {
+		if ((expenses.size() > 0) && (list.getSelectedIndex () >= 0)) {
 			btnRemove.setEnabled(true);
 			btnEdit.setEnabled(true);
+		} else {
+			btnRemove.setEnabled(false);
+			btnEdit.setEnabled(false);
 		}
 	}
 	
