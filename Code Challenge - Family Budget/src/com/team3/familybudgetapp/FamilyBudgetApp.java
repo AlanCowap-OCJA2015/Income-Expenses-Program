@@ -33,23 +33,22 @@ import javax.xml.transform.OutputKeys;
  */
 public class FamilyBudgetApp extends JFrame {
 
+	static JFrame familyBudgetAppWindow;
 	private JPanel contentPaneMainWindow;
 
+	private JLabel lblFamilyMembers;
+	private JList list;
+	private JButton btnAddPerson;
+	private JButton btnRemovePerson;
+	private JButton btnEditPerson;
+	private JButton btnLoad;
+	private JButton btnSave;
+	private JButton btnEditExpenses;
+	private JButton btnReports;
+	
+	static boolean dataChanged = false; 
 	private static Family family = new Family();
-	
 	public Rectangle screenSize;
-	
-	static JList list;
-	static JButton btnRemovePerson;
-	static JButton btnEditPerson;
-	static JButton btnLoad;
-	static JButton btnSave;
-	static JButton btnAddPerson;
-	static JLabel lblFamilyMembers;
-	static JButton btnEditExpenses;
-	static JButton btnReports;
-	
-	static public JFrame familyBudgetAppWindow;
 	
 	/**
 	 * Launch the application.
@@ -60,8 +59,8 @@ public class FamilyBudgetApp extends JFrame {
 //				new TestFamily(family);
 				try {
 					FamilyBudgetApp frame = new FamilyBudgetApp();
-					updateButtons();
-					updateList();
+					frame.updateButtons();
+					frame.updateList();
 					frame.setVisible(true);
 					frame.setResizable(false);
 				} catch (Exception e) {
@@ -99,7 +98,15 @@ public class FamilyBudgetApp extends JFrame {
 		btnAddPerson.setBounds(266, 37, 134, 23);
 		btnAddPerson.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				new AddPerson(family.members);
+				Person newPerson = new Person();
+				new EditMember(newPerson);
+
+				family.members.add (newPerson);
+
+				// Update the list in the main window
+				updateList ();
+				updateButtons ();
+				
 			}
 		});
 		contentPaneMainWindow.add(btnAddPerson);
@@ -116,8 +123,8 @@ public class FamilyBudgetApp extends JFrame {
 						JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == 0) {
 					family.members.remove(list.getSelectedIndex());
 				}
-				FamilyBudgetApp.updateList();
-				FamilyBudgetApp.updateButtons();
+				updateList();
+				updateButtons();
 			}
 		});
 		contentPaneMainWindow.add(btnRemovePerson);
@@ -128,7 +135,7 @@ public class FamilyBudgetApp extends JFrame {
 		btnEditPerson.setEnabled(false);
 		btnEditPerson.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new EditPerson(family.members.get(list.getSelectedIndex()));
+				new EditMember(family.members.get(list.getSelectedIndex()));
 			}
 		});
 		contentPaneMainWindow.add(btnEditPerson);
@@ -137,7 +144,25 @@ public class FamilyBudgetApp extends JFrame {
 		btnLoad = new JButton("Load");
 		btnLoad.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new TestDialog ();
+				if (isDataChanged()) {
+					
+					JFileChooser jfc = new JFileChooser(System.getProperty("user.dir"));
+					int rc = jfc.showDialog(null, "Select data file to load");
+					if (rc == JFileChooser.APPROVE_OPTION) {
+						File file = jfc.getSelectedFile();
+						String filename = file.getAbsolutePath();
+						
+						// Call method to open the file and load it
+						// It should return true if successful
+						
+						clearDataChanged();
+						updateList();
+						updateButtons();
+						
+					} else {
+						System.out.println("User cancelled the file chooser.");
+					}
+				}
 			}
 		});
 		btnLoad.setBounds(336, 162, 64, 23);
@@ -148,11 +173,13 @@ public class FamilyBudgetApp extends JFrame {
 		btnSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser jfc = new JFileChooser(System.getProperty("user.dir"));
-				int rc = jfc.showDialog(null, "Select Data File");
+				int rc = jfc.showDialog(null, "Select data file for saving");
 				if (rc == JFileChooser.APPROVE_OPTION) {
 					File file = jfc.getSelectedFile();
 					String filename = file.getAbsolutePath();
-					System.out.println ("User wants to save to " + filename);
+					// Call method to open the file and save it
+					// It should return true if successful
+					clearDataChanged();
 				} else {
 					System.out.println("User cancelled the file chooser.");
 				}
@@ -209,7 +236,7 @@ public class FamilyBudgetApp extends JFrame {
 	/**
 	 *  Update the contents of the listbox with the current family member list
 	 */
-	public static void updateList () {
+	public void updateList () {
 		String[] listData = new String[family.members.size()];
 		for (int p = 0; p < family.members.size(); ++p) { 
 			listData[p] = family.members.get(p).getFullName();  
@@ -224,7 +251,7 @@ public class FamilyBudgetApp extends JFrame {
 	 * Set the remove and edit buttons as enabled or disabled depending on whether
 	 * there are members in the family and one of them has been selected in the list
 	 */
-	public static void updateButtons () {
+	public void updateButtons () {
 		if ((FamilyBudgetApp.family.members.size() > 0) && (list.getSelectedIndex() >= 0)) {
 			btnRemovePerson.setEnabled(true);
 			btnEditPerson.setEnabled(true);
@@ -232,6 +259,21 @@ public class FamilyBudgetApp extends JFrame {
 			btnRemovePerson.setEnabled(false);
 			btnEditPerson.setEnabled(false);
 		}
+	}
+	
+	/**
+	 * Set or get the data changed flag so the program can tell if the file may need to be 
+	 * saved before exiting or loading a new file
+	 * 
+	 */
+	public static void setDataChanged () {
+		dataChanged = true;
+	}
+	public static void clearDataChanged () {
+		dataChanged = false;
+	}
+	public static boolean isDataChanged () {
+		return dataChanged;
 	}
 	
 }
