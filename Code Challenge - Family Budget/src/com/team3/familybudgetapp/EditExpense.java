@@ -41,8 +41,7 @@ public class EditExpense extends JDialog {
 	private JLabel lblRecurs;
 
 	/**
-	 * TODO Change references to ExpensesWindow to parentWindow which will be passed in 
-	 * 
+	 * Edit a specific expense
 	 */
 	public EditExpense(final Expense expense){
 		editExpense = new JDialog (ExpensesWindow.editExpenses, "Add Expense");
